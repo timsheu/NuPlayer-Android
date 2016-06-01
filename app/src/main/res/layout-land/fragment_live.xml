@@ -1,0 +1,101 @@
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.nuvoton.skyeye.LiveFragment">
+
+    <com.appunite.ffmpeg.FFmpegSurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/videoView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#114236"
+        app:layout_aspectRatio="133%"
+        app:layout_widthPercent="100%"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignBottom="@+id/videoView"
+        android:layout_alignRight="@+id/videoView"
+        android:layout_alignLeft="@+id/videoView"
+        android:background="#036D6E"
+        >
+
+
+        <ImageButton
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:id="@+id/playButton"
+            android:src="@drawable/play"
+            android:scaleType="centerCrop"
+            android:background="#036D6E"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="8dp"
+            />
+
+        <ImageButton
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:id="@+id/expandButton"
+            android:src="@drawable/expand"
+            android:scaleType="centerCrop"
+            android:background="#036D6E"
+            android:layout_centerInParent="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="8dp"
+            />
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:layout_centerHorizontal="true"
+            android:thumbTint="#FFFFFF"
+            android:progressTint="#007DFF"
+            android:layout_toRightOf="@+id/playButton"
+            android:layout_toLeftOf="@+id/expandButton"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="false"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp" />
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:id="@+id/snapshotButton"
+        android:layout_alignTop="@+id/videoView"
+        android:layout_alignEnd="@+id/videoView"
+        android:src="@drawable/snapshot"
+        android:scaleType="centerCrop"
+        android:background="#00ffffff"
+        android:layout_marginRight="2dp"
+        />
+
+    <ImageView
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:id="@+id/redDot"
+        android:layout_alignBottom="@+id/snapshotButton"
+        android:layout_toStartOf="@+id/snapshotButton"
+        android:src="@drawable/recordflashoff"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_alignTop="@+id/videoView"
+        android:layout_toStartOf="@+id/redDot"
+        android:text="OFFLINE"
+        android:paddingTop="0dp"
+        android:paddingRight="10dp" />
+</android.support.percent.PercentRelativeLayout>

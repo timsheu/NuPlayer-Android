@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="Camera Setting"
+        android:title="@string/camera_category_title"
+        android:textSize="20dp"
+        android:layout="@layout/p_category_camera_layout">
+        <EditTextPreference
+            android:key="Camera Name"
+            android:title="Camera Name"
+            android:summary="Click to custom camera name."
+            android:defaultValue="Local-Camera"
+            />
+        <EditTextPreference
+            android:key="Camera URL"
+            android:title="Camera URL"
+            android:summary="Click to edit camera URL address."
+            android:defaultValue="rtsp://192.168.100.1/cam1/h264"
+            />
+        <ListPreference
+            android:key="Resolution"
+            android:title="Resolution"
+            android:summary="%s"
+            android:entries="@array/resolution_list"
+            android:entryValues="@array/resolution_value_list"
+            android:dialogTitle="Choose Resolution"
+            android:defaultValue="0"
+            />
+        <ListPreference
+            android:key="Adaptive"
+            android:title="Adaptive Bit Rate"
+            android:summary="%s"
+            android:entries="@array/adaptive_list"
+            android:entryValues="@array/adaptive_value_list"
+            android:dialogTitle="Set Adaptive Bit Rate Level"
+            android:defaultValue="0"
+
+            />
+        <ListPreference
+            android:key="Fixed BitRate"
+            android:title="Fixed Bit Rate"
+            android:summary="%s"
+            android:entries="@array/fixed_bitrate_list"
+            android:entryValues="@array/fixed_bitrate_value_list"
+            android:dialogTitle="Set Fixed Bit Rate Level"
+            android:defaultValue="0"
+            />
+        <ListPreference
+            android:key="Fixed Quality"
+            android:title="Fixed Quality"
+            android:summary="%s"
+            android:entries="@array/fixed_quality_list"
+            android:entryValues="@array/fixed_quality_value_list"
+            android:dialogTitle="Set Fixed Quality Level"
+            android:defaultValue="0"
+            />
+        <ListPreference
+            android:key="FPS"
+            android:title="FPS"
+            android:summary="%s"
+            android:entryValues="@array/fps_value_list"
+            android:entries="@array/fps_list"
+            android:defaultValue="30"
+            />
+        <SwitchPreference
+            android:key="Device Mic"
+            android:title="Device Mic"
+            android:summaryOn="Device microphone is on."
+            android:summaryOff="Device microphone is off."
+            />
+        <SwitchPreference
+            android:key="Transmission"
+            android:title="Video Transmission over TCP/UDP"
+            android:summaryOn="RTP is over TCP."
+            android:summaryOff="RTP is over UDP."
+            />
+
+        <ListPreference
+            android:key="Reboot"
+            android:title="Reboot Device"
+            android:summary="Click to reboot device."
+            android:entryValues="@array/reboot_device_value_list"
+            android:entries="@array/reboot_device_list"
+            />
+        <ListPreference
+            android:key="Reset Data"
+            android:title="Reset Data"
+            android:summary="Click to reset data."
+            android:entryValues="@array/reset_data_value_list"
+            android:entries="@array/reset_data_list"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="Wi-Fi Setting"
+        android:title="@string/wifi_category_title"
+        android:layout="@layout/p_category_wifi_layout">
+
+        <ListPreference
+            android:key="Wi-Fi QR Code"
+            android:title="Wi-Fi QR Code"
+            android:summary="Click to show Wi-Fi QR Code."
+            android:entryValues="@array/show_qr_code_value_list"
+            android:entries="@array/show_qr_code_list"
+            />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

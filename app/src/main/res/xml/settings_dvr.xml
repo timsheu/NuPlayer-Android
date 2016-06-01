@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="Camera Setting"
+        android:textSize="20dp"
+        android:layout="@layout/p_category_camera_layout_dvr"
+        >
+        <EditTextPreference
+            android:key="Camera Name"
+            android:title="Camera Name"
+            android:summary="Click to custom camera name."
+            android:defaultValue="Local-Camera"
+            />
+        <EditTextPreference
+            android:key="Camera URL"
+            android:title="Camera URL"
+            android:summary="Click to edit camera URL address."
+            android:defaultValue="rtsp://192.168.100.1/cam1/h264"
+            />
+        <ListPreference
+            android:key="Resolution"
+            android:title="Resolution"
+            android:summary="%s"
+            android:entries="@array/resolution_list"
+            android:entryValues="@array/resolution_value_list"
+            android:dialogTitle="Choose Resolution"
+            android:defaultValue="0"
+            />
+        <ListPreference
+            android:key="FPS"
+            android:title="FPS"
+            android:summary="%s"
+            android:entryValues="@array/fps_value_list"
+            android:entries="@array/fps_list"
+            android:defaultValue="30"
+            />
+        <SwitchPreference
+            android:key="Record Status"
+            android:title="Recorder Status"
+            android:summaryOn="Device recorder is on."
+            android:summaryOff="Device recorder is off."
+            />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:layout="@layout/p_category_audio_layout_dvr">
+        <SwitchPreference
+            android:key="Dvr Device Mic"
+            android:title="Device Mic"
+            android:summaryOn="Device microphone is on."
+            android:summaryOff="Device microphone is off."
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="Wi-Fi Setting"
+        android:layout="@layout/p_category_wifi_layout_dvr">
+        <EditTextPreference
+            android:key="SSID"
+            android:title="SSID"
+            android:summary="Click to custom SSID."
+            android:defaultValue="SkyEye"
+            />
+        <EditTextPreference
+            android:key="Password"
+            android:title="Password"
+            android:summary="Click to custom password."
+            android:defaultValue="12345678"
+            />
+        <ListPreference
+            android:key="Wi-Fi QR Code"
+            android:title="Generate Wi-Fi QR Code"
+            android:summary="Click to generate Wi-Fi QR Code."
+            android:entryValues="@array/show_qr_code_value_list"
+            android:entries="@array/show_qr_code_list"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:layout="@layout/p_category_info_layout_dvr">
+
+        <Preference
+            android:key="Available Storage"
+            android:title="Available Storage"
+            android:summary="Storage available on device."/>
+
+        <Preference
+            android:key="Recorder Status"
+            android:title="Recorder Status"
+            android:summary="Recorder is not recording on device."/>
+
+        <ListPreference
+            android:key="Reboot"
+            android:title="Reboot Device"
+            android:summary="Click to reboot device."
+            android:entryValues="@array/reboot_device_value_list"
+            android:entries="@array/reboot_device_list"
+            />
+        <ListPreference
+            android:key="Reset Data"
+            android:title="Reset Data"
+            android:summary="Click to reset data."
+            android:entryValues="@array/reset_data_value_list"
+            android:entries="@array/reset_data_list"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

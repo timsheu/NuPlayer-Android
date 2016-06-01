@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">NuPlayer</string>
+    <string name="dvr">DVR</string>
+    <string name="skyeye">SkyEye</string>
+
+    <string name="camera_category_title">Camera Setup</string>
+    <string name="wifi_category_title">Wi-Fi Setup</string>
+
+    <string name="camera_category_title_dvr">Video Stream</string>
+    <string name="audio_category_title_dvr">Audio Stream</string>
+    <string name="wifi_category_title_dvr">Wireless Setup</string>
+    <string name="info_category_title_dvr">Device Information</string>
+
+</resources>
