@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Setup Camera 1</key>
+	<dict>
+		<key>Adaptive</key>
+		<string>-1</string>
+		<key>Fixed Quality</key>
+		<string>-1</string>
+		<key>Fixed Bit Rate</key>
+		<string>-1</string>
+		<key>Transmission</key>
+		<string>UDP</string>
+		<key>Mute</key>
+		<string>ON</string>
+		<key>Device Info</key>
+		<dict>
+			<key>Available Storage</key>
+			<string></string>
+			<key>Recorder Status</key>
+			<string></string>
+		</dict>
+		<key>Serial</key>
+		<string>1</string>
+		<key>Name</key>
+		<string>ZY-LOCAL-IP</string>
+		<key>URL</key>
+		<string>rtsp://192.168.100.1/cam1/h264</string>
+		<key>Resolution</key>
+		<string>1</string>
+		<key>Encode Quality</key>
+		<string>1</string>
+		<key>Bit Rate</key>
+		<string>6000</string>
+		<key>FPS</key>
+		<string>30</string>
+		<key>File List</key>
+		<array/>
+		<key>History</key>
+		<array>
+			<string>rtsp://192.168.100.1/cam1/h264</string>
+			<string>rtsp://192.168.100.1/cam1/mpeg4</string>
+			<string>-</string>
+			<string>-</string>
+			<string>-</string>
+		</array>
+	</dict>
+	<key>Device Information</key>
+	<dict>
+		<key>Available Storage</key>
+		<string>1</string>
+		<key>Recorder Status</key>
+		<string>1</string>
+	</dict>
+	<key>Setup Camera 2</key>
+	<dict>
+		<key>Fixed Quality</key>
+		<string>-1</string>
+		<key>Fixed Bit Rate</key>
+		<string>-1</string>
+		<key>Adaptive</key>
+		<string>-1</string>
+		<key>Transmission</key>
+		<string>UDP</string>
+		<key>Mute</key>
+		<string>ON</string>
+		<key>Device Info</key>
+		<dict>
+			<key>Available Storage</key>
+			<string></string>
+			<key>Recorder Status</key>
+			<string></string>
+		</dict>
+		<key>Serial</key>
+		<string>2</string>
+		<key>Name</key>
+		<string>ZY-IP</string>
+		<key>URL</key>
+		<string>rtsp://114.35.206.240/cam1/h264</string>
+		<key>Resolution</key>
+		<string>1</string>
+		<key>Encode Quality</key>
+		<string>1</string>
+		<key>Bit Rate</key>
+		<string>6000</string>
+		<key>FPS</key>
+		<string>30</string>
+		<key>File List</key>
+		<array/>
+		<key>History</key>
+		<array>
+			<string>rtsp://114.35.206.240/cam1/h264</string>
+			<string>rtsp://114.35.206.240/cam1/mpeg4</string>
+			<string>-</string>
+			<string>-</string>
+			<string>-</string>
+		</array>
+	</dict>
+	<key>Setup Camera 3</key>
+	<dict>
+		<key>Fixed Quality</key>
+		<string>-1</string>
+		<key>Adaptive</key>
+		<string>-1</string>
+		<key>Fixed Bit Rate</key>
+		<string>-1</string>
+		<key>Transmission</key>
+		<string>UDP</string>
+		<key>Mute</key>
+		<string>ON</string>
+		<key>Device Info</key>
+		<dict>
+			<key>Available Storage</key>
+			<string></string>
+			<key>Recorder Status</key>
+			<string></string>
+		</dict>
+		<key>Serial</key>
+		<string>3</string>
+		<key>Name</key>
+		<string>ZY-NO-IP</string>
+		<key>URL</key>
+		<string>rtsp://nuvoton.no-ip.biz/cam1/h264</string>
+		<key>Resolution</key>
+		<string>1</string>
+		<key>Encode Quality</key>
+		<string>1</string>
+		<key>Bit Rate</key>
+		<string>6000</string>
+		<key>FPS</key>
+		<string>30</string>
+		<key>File List</key>
+		<array/>
+		<key>History</key>
+		<array>
+			<string>rtsp://nuvoton.no-ip.biz/cam1/h264</string>
+			<string>rtsp://nuvoton.no-ip.biz/cam1/mpeg4</string>
+			<string>-</string>
+			<string>-</string>
+			<string>-</string>
+		</array>
+	</dict>
+	<key>Setup Camera 4</key>
+	<dict>
+		<key>Fixed Quality</key>
+		<string>-1</string>
+		<key>Adaptive</key>
+		<string>-1</string>
+		<key>Fixed Bit Rate</key>
+		<string>-1</string>
+		<key>Transmission</key>
+		<string>UDP</string>
+		<key>Mute</key>
+		<string>ON</string>
+		<key>Device Info</key>
+		<dict>
+			<key>Available Storage</key>
+			<string></string>
+			<key>Recorder Status</key>
+			<string></string>
+		</dict>
+		<key>Serial</key>
+		<string>4</string>
+		<key>Name</key>
+		<string>ZY-NO-IP</string>
+		<key>URL</key>
+		<string>rtsp://nuvoton.no-ip.biz/cam1/h264</string>
+		<key>Resolution</key>
+		<string>1</string>
+		<key>Encode Quality</key>
+		<string>1</string>
+		<key>Bit Rate</key>
+		<string>6000</string>
+		<key>FPS</key>
+		<string>30</string>
+		<key>File List</key>
+		<array/>
+		<key>History</key>
+		<array>
+			<string>-</string>
+			<string>-</string>
+			<string>-</string>
+			<string>-</string>
+			<string>-</string>
+		</array>
+	</dict>
+	<key>Device Mic</key>
+	<dict>
+		<key>Mute</key>
+		<string>ON</string>
+	</dict>
+	<key>Phone Mic</key>
+	<dict>
+		<key>Mute</key>
+		<string>ON</string>
+	</dict>
+	<key>Wi-Fi AP Setup</key>
+	<dict>
+		<key>SSID</key>
+		<string>ssid</string>
+		<key>password</key>
+		<string>password</string>
+	</dict>
+</dict>
+</plist>

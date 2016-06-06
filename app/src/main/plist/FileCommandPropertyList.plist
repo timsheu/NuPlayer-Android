@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>Download File List</string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>list</string>
+		<key>group</key>
+		<string>file</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Open File</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>open_file</string>
+		<key>path</key>
+		<string>filename</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Pause Media Play</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>pause_file</string>
+		<key>handle</key>
+		<string>integer</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Resume Media Play</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>resume_file</string>
+		<key>handle</key>
+		<string>integer</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Close Media File</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>close_file</string>
+		<key>handle</key>
+		<string>integer</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Seek Media File Position</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>seek_file</string>
+		<key>handle</key>
+		<string>integer</string>
+		<key>value</key>
+		<string>0</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Change Play Speed</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>set_play_speed</string>
+		<key>handle</key>
+		<string>integer</string>
+		<key>denominator</key>
+		<string>integer</string>
+		<key>numerator</key>
+		<string>integer</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get File Play Status</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_file_status</string>
+		<key>handle</key>
+		<string>integer</string>
+		<key>value</key>
+		<string>0</string>
+	</dict>
+</array>
+</plist>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>Snapshot</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>snapshot</string>
+		<key>pipe</key>
+		<string>0</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Recorder Status</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>is_pipe_record</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Start Record</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>start_record_pipe</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Stop Record</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>stop_record_pipe</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+</array>
+</plist>

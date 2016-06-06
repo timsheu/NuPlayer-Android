@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>List Wi-Fi Parameters</string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>list</string>
+		<key>group</key>
+		<string>wifi</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Update Wi-Fi Parameters</string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>update</string>
+		<key>group</key>
+		<string>wifi</string>
+		<key>BOOTPROTO</key>
+		<string>DHCP</string>
+		<key>IPADDR</key>
+		<string>0.0.0.0</string>
+		<key>GATEWAY</key>
+		<string>0.0.0.0</string>
+		<key>SSID</key>
+		<string>String</string>
+		<key>AUTH_MODE</key>
+		<string>WPAPSK</string>
+		<key>ENCRYPT_TYPE</key>
+		<string>WEP</string>
+		<key>AUTH_KEY</key>
+		<string>String</string>
+		<key>WPS_TRIG_KEY</key>
+		<string>HOME</string>
+		<key>AP_SSID</key>
+		<string>String</string>
+		<key>AP_AUTH_KEY</key>
+		<string>String</string>
+		<key>AP_CHANNEL</key>
+		<string>1</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>List Ethernet Parameters</string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>list</string>
+		<key>group</key>
+		<string>ethernet</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string></string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>list</string>
+		<key>group</key>
+		<string>ethernet</string>
+		<key>DEVICE</key>
+		<string>eth0</string>
+		<key>BOOTPROTO</key>
+		<string>DHCP</string>
+		<key>IPADDR</key>
+		<string>0.0.0.0</string>
+		<key>GATEWAY</key>
+		<string>0.0.0.0</string>
+		<key>USER</key>
+		<string>String</string>
+		<key>PASSWD</key>
+		<string>String</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Update Ethernet Parameters</string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>list</string>
+		<key>group</key>
+		<string>puncher</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Update Puncher Parameters</string>
+		<key>Base Command</key>
+		<string>param.cgi</string>
+		<key>action</key>
+		<string>update</string>
+		<key>group</key>
+		<string>puncher</string>
+		<key>Puncher.Holes.[0].InternalPort</key>
+		<string>80</string>
+		<key>Puncher.Holes.[0].ExternalPort</key>
+		<string>8888</string>
+		<key>Puncher.Holes.[1].InternalPort</key>
+		<string>554</string>
+		<key>Puncher.Holes.[1].ExternalPort</key>
+		<string>8000</string>
+		<key>Puncher.DDNS.[0].Server</key>
+		<string>String</string>
+		<key>Puncher.DDNS.[0].Username</key>
+		<string>String</string>
+		<key>Puncher.DDNS.[0].Password</key>
+		<string>String</string>
+		<key>Puncher.DDNS.[0].Hostname</key>
+		<string>String</string>
+	</dict>
+</array>
+</plist>

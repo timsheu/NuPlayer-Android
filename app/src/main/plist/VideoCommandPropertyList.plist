@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>Request Image</string>
+		<key>Base Command</key>
+		<string>image.cgi</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Set Resolution</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>set_resol</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+		<key>value</key>
+		<string>0</string>
+		<key>set</key>
+		<string>1</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get Resolution</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_resol</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+		<key>set</key>
+		<string>0</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Set Encode Quality</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>set_enc_quality</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+		<key>value</key>
+		<string>1</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get Encode Quality</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_enc_quality</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Set Encode Bitrate</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>set_enc_bitrate</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+		<key>value</key>
+		<string>30</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get Encode Bitrate</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_enc_bitrate</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Set MAX FPS</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>set_max_fps</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+		<key>value</key>
+		<string>30</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get MAX FPS</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_max_fps</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get Brightness</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_brightness</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Increase Brightness</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>plus_brightness</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Decrease Brightness</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>minus_brightness</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Get Contrast</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>get_contrast</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Increase Contrast</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>plus_contrast</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Decrease Contrast</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>minus_contrast</string>
+		<key>pipe</key>
+		<string>0</string>
+		<key>type</key>
+		<string>jpeg</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Suspend Video Capture</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>suspend_capture</string>
+		<key>pipe</key>
+		<string>0</string>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>Resume Video Capture</string>
+		<key>Base Command</key>
+		<string>server.command</string>
+		<key>Sub Command</key>
+		<string>resume_capture</string>
+		<key>pipe</key>
+		<string>0</string>
+	</dict>
+</array>
+</plist>
