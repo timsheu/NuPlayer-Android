@@ -137,6 +137,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: " + getActivity().fileList());
         thisView = inflater.inflate(R.layout.fragment_live, container, false);
         registerUI();
         determineOrientation();
