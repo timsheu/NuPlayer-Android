@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.Surface;
 
 public class FFmpegPlayer {
+	private static final String TAG = "FFmpegPlayer";
 	private static class StopTask extends AsyncTask<Void, Void, Void> {
 
 		private final FFmpegPlayer player;
@@ -95,6 +96,7 @@ public class FFmpegPlayer {
 		@Override
 		protected void onPostExecute(SetDataSourceTaskResult result) {
 			if (player.mpegListener != null)
+				Log.d(TAG, "onPostExecute: ");
 				player.mpegListener.onFFDataSourceLoaded(result.error,
 						result.streams);
 		}

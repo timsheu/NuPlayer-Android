@@ -25,6 +25,7 @@ import com.appunite.ffmpeg.FFmpegListener;
 import com.appunite.ffmpeg.FFmpegDisplay;
 import com.appunite.ffmpeg.FFmpegStreamInfo;
 import com.appunite.ffmpeg.NotPlayingException;
+import com.nuvoton.socketmanager.ReadConfigure;
 
 import java.io.File;
 import java.util.HashMap;
@@ -137,7 +138,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: " + getActivity().fileList());
         thisView = inflater.inflate(R.layout.fragment_live, container, false);
         registerUI();
         determineOrientation();
@@ -229,6 +229,8 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     };
 
     private void setDataSource() {
+        ReadConfigure configure = ReadConfigure.getInstance(getActivity());
+
         progressBar.setVisibility(View.VISIBLE);
 
         HashMap<String, String> params = new HashMap<String, String>();
