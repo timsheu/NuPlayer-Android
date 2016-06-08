@@ -38,6 +38,7 @@ public class StartPage extends AppCompatActivity {
             intent.setClass(this, SelectCamera.class);
         }else if (pageIndex == 1){
             intent.putExtra("Platform", "DVR");
+            intent.putExtra("CameraSerial", "0");
             intent.setClass(this, LivePage.class);
         }
         startActivity(intent);

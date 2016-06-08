@@ -21,6 +21,7 @@ import java.util.TimerTask;
  * Created by timsheu on 6/3/16.
  */
 public class SocketManager {
+    private URL url;
     private static final String TAG = "SocketManager";
     private  static final String CMDSNAPSHOT="0";
     private  static final String CMDRSTART="1";
@@ -35,7 +36,7 @@ public class SocketManager {
         InputStream in =null;
         int response = -1;
 
-        URL url = new URL(urlString);
+        url = new URL(urlString);
         URLConnection conn = url.openConnection();
 
         if(!(conn instanceof HttpURLConnection))

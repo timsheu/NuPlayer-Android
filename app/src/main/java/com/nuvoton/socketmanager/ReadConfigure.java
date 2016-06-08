@@ -55,42 +55,48 @@ public class ReadConfigure {
         for (int i=0; i<5; i++){
             initSharedPreference(i);
         }
-        try {
-            InputStream inputStream = context.getAssets().open(audioCommand);
-            audioCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InputStream inputStream = contextLocal.getAssets().open(audioCommand);
+                    audioCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(configCommand);
-            configCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(configCommand);
+                    configCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(fileCommand);
-            fileCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(fileCommand);
+                    fileCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(infoCommand);
-            infoCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(infoCommand);
+                    infoCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(multicastCommand);
-            multicastCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(multicastCommand);
+                    multicastCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(recordCommand);
-            recordCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(recordCommand);
+                    recordCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(systemCommand);
-            systemCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(systemCommand);
+                    systemCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-            inputStream = context.getAssets().open(videoCommand);
-            videoCommandSet = parsePropertyList(inputStream);
-            if (inputStream != null) { inputStream.close(); }
+                    inputStream = contextLocal.getAssets().open(videoCommand);
+                    videoCommandSet = parsePropertyList(inputStream);
+                    if (inputStream != null) { inputStream.close(); }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         return readConfigure;
     }
 
@@ -157,7 +163,7 @@ public class ReadConfigure {
     }
 
     private static void initSharedPreference(int cameraSerial){
-        String preferenceName = "Camera_" + String.valueOf(cameraSerial);
+        String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
         Log.d(TAG, "initSharedPreference: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();

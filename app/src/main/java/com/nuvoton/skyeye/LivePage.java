@@ -31,6 +31,7 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
 
     private int index=0;
     private String platform = "";
+    private String cameraSerial = "0";
     private boolean clicked = false;
     private boolean isLandscape = false;
     private static final String TAG = "SkyEye", FRAGMENT_TAG = "CURRENT_FRAGMENT_INDEX";
@@ -61,7 +62,12 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         View decorView = getWindow().getDecorView();
         setContentView(R.layout.activity_live_page);
         platform = getIntent().getStringExtra("Platform");
-        Log.d(TAG, "onCreate:" + platform);
+        try{
+            cameraSerial = getIntent().getStringExtra("CameraSerial");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        Log.d(TAG, "onCreate:" + platform + ", " + cameraSerial);
         initUI();
         switch (orientation){
             case Surface.ROTATION_90:
@@ -96,6 +102,10 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
     }
 
     private void initUI(){
+        final Bundle bundle = new Bundle();
+        bundle.putString("Platform", platform);
+        bundle.putString("CameraSerial", cameraSerial);
+
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         AHBottomNavigationItem liveItem = new AHBottomNavigationItem("Live", R.drawable.livetab);
         AHBottomNavigationItem fileItem = new AHBottomNavigationItem("File", R.drawable.foldertab);
@@ -121,16 +131,19 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
                 index = position;
                 if (position == 0){
                     LiveFragment fragment = new LiveFragment();
+                    fragment.setArguments(bundle);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fragment_content, fragment)
                             .commit();
                 }else if (position == 1){
                     FileFragment fragment = FileFragment.newInstance(position);
+                    fragment.setArguments(bundle);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fragment_content, fragment)
                             .commit();
                 }else{
                     SettingFragment fragment = SettingFragment.newInstance(platform);
+                    fragment.setArguments(bundle);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fragment_content, fragment)
                             .commit();
@@ -142,19 +155,25 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
     }
 
     private void changeFragment(int savedIndex){
+        Bundle bundle = new Bundle();
+        bundle.putString("Platform", platform);
+        bundle.putString("CameraSerial", cameraSerial);
         index = savedIndex;
         if (index == 0){
             LiveFragment fragment = new LiveFragment();
+            fragment.setArguments(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_content, fragment)
                     .commit();
         }else if (index == 1){
             FileFragment fragment = FileFragment.newInstance(index);
+            fragment.setArguments(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_content, fragment)
                     .commit();
         }else{
             SettingFragment fragment = new SettingFragment();
+            fragment.setArguments(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_content, fragment)
                     .commit();

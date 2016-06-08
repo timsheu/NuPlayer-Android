@@ -20,23 +20,7 @@ public class SelectCamera extends AppCompatActivity {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        switch (position){
-                            case 0:
-                                cameraSerial = "Setup Camera 1";
-                                break;
-                            case 1:
-                                cameraSerial = "Setup Camera 2";
-                                break;
-                            case 2:
-                                cameraSerial = "Setup Camera 3";
-                                break;
-                            case 3:
-                                cameraSerial = "Setup Camera 4";
-                                break;
-                            default:
-                                cameraSerial = "Setup Camera 1";
-                                break;
-                        }
+                        cameraSerial = String.valueOf(position + 1);
                         Intent intent = new Intent(SelectCamera.this, LivePage.class);
                         intent.putExtra("Platform", platform);
                         intent.putExtra("CameraSerial", cameraSerial);

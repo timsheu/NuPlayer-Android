@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.RequiresPermission;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,9 +37,10 @@ import java.util.TimerTask;
  * A simple {@link Fragment} subclass.
  */
 public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener{
+    private ReadConfigure configure;
     private Timer checkAliveTimer;
     private int orientation;
-    private String cameraName = "DVR";
+    private String plarform, cameraSerial;
     private ProgressBar progressBar;
     private boolean isPlaying = false, isTracking = false;
     private int mCurrentTimeS;
@@ -49,7 +51,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     private ImageButton snapshotButton, playButton, expandButton;
     private int mAudioStreamNo = FFmpegPlayer.UNKNOWN_STREAM;
     private int mSubtitleStreamNo = FFmpegPlayer.NO_STREAM;
-    private static final String TAG = "ffmpegAndroid";
+    private static final String TAG = "LiveFragment";
 
     private boolean isHide = false;
     OnHideBottomBarListener mCallback;
@@ -141,9 +143,13 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         thisView = inflater.inflate(R.layout.fragment_live, container, false);
         registerUI();
         determineOrientation();
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            plarform = getArguments().getString("Platform");
+            cameraSerial = getArguments().getString("CameraSerial");
+        }
 
         // Inflate the layout for this fragment
-
         return thisView;
     }
 
@@ -165,7 +171,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             }
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
+        configure = ReadConfigure.getInstance(getActivity());
         setDataSource();
+
     }
 
     @Override
@@ -229,9 +237,12 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     };
 
     private void setDataSource() {
-        ReadConfigure configure = ReadConfigure.getInstance(getActivity());
-
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.post(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
 
         HashMap<String, String> params = new HashMap<String, String>();
         // set font for ass

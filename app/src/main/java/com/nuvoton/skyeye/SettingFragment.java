@@ -14,8 +14,8 @@ import android.view.ViewGroup;
  * A simple {@link Fragment} subclass.
  */
 public class SettingFragment extends PreferenceFragment {
-    private static String platform = "";
-    private String TAG = "timsheu";
+    private static String platform, cameraSerial;
+    private String TAG = "SettingFragment";
     public static SettingFragment newInstance(String pf){
         platform = pf;
         SettingFragment fragment = new SettingFragment();
@@ -38,6 +38,11 @@ public class SettingFragment extends PreferenceFragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            platform = bundle.getString("Platform");
+            cameraSerial = bundle.getString("CamereSerial");
+        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_setting, container, false);
     }

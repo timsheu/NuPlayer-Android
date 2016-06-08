@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,10 @@ import java.util.ArrayList;
  * interface.
  */
 public class FileFragment extends Fragment {
+    private static final String TAG = "FileFragment";
 
-    // TODO: Customize parameters
+    private String platform, cameraSerial;
+
     private int mColumnCount = 1;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -48,6 +51,8 @@ public class FileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_file_list, container, false);
+        platform = getArguments().getString("Platform");
+        cameraSerial = getArguments().getString("CameraSerial");
         initList(view);
         // Set the adapter
         return view;
@@ -76,6 +81,7 @@ public class FileFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        Log.d(TAG, "initList: " + platform + ", " + cameraSerial);
         ArrayList<FileContent> itemsData = new ArrayList<>();
         for (int i=0; i<50; i++){
             FileContent content = new FileContent(String.valueOf(i), "Test Name" + String.valueOf(i), "Test Date" + String.valueOf(i));
@@ -84,6 +90,10 @@ public class FileFragment extends Fragment {
 
         MyFileRecyclerViewAdapter adapter = new MyFileRecyclerViewAdapter(itemsData);
         recyclerView.setAdapter(adapter);
+    }
+
+    private void sendFileListCommand(){
+
     }
 
 
