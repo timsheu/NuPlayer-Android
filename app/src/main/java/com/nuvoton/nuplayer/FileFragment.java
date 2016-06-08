@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.longevitysoft.android.xml.plist.domain.PListObject;
+import com.longevitysoft.android.xml.plist.domain.sString;
 import com.nuvoton.socketmanager.ReadConfigure;
 
 import java.net.MalformedURLException;
@@ -121,10 +122,12 @@ public class FileFragment extends Fragment {
 
     private void sendListFilename(){
         URL url = getDeviceURL();
-        String command;
+        sString name, baseCommand;
         ArrayList<Map> fileCommandSet = configure.fileCommandSet;
         Map<String, PListObject> targetCommand = fileCommandSet.get(0);
-        Log.d(TAG, "sendListFilename: " + targetCommand.keySet().toString() + ", " + targetCommand.values().toString());
+        name = (sString) targetCommand.get("Name");
+        baseCommand = (sString) targetCommand.get("Base Command");
+        Log.d(TAG, "sendListFilename: " + name.getValue() + ", " + baseCommand.getValue());
     }
 
 

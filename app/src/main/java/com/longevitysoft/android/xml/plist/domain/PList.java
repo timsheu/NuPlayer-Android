@@ -223,8 +223,8 @@ public class PList {
 			ret = new Integer();
 			((Integer) ret).setValue(value);
 		} else if (tag.equalsIgnoreCase(Constants.TAG_STRING)) {
-			ret = new String();
-			((String) ret).setValue(value);
+			ret = new sString();
+			((sString) ret).setValue(value);
 		} else if (tag.equalsIgnoreCase(Constants.TAG_REAL)) {
 			ret = new Real();
 			((Real) ret).setValue(value);

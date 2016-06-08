@@ -108,8 +108,8 @@ public class Dict extends PListObject {
 	 *            dictionary.
 	 * @return The String value of the specified key.
 	 */
-	public String getConfiguration(java.lang.String key) {
-		return (String) getConfigurationObject(key);
+	public sString getConfiguration(java.lang.String key) {
+		return (sString) getConfigurationObject(key);
 	}
 
 	/**
@@ -125,9 +125,9 @@ public class Dict extends PListObject {
 	 * @return The String value of the specified key, or defaultValue if the
 	 *         value for keyName is null.
 	 */
-	public String getConfigurationWithDefault(java.lang.String key,
-			String defaultValue) {
-		String value = getConfiguration(key);
+	public sString getConfigurationWithDefault(java.lang.String key,
+			sString defaultValue) {
+		sString value = getConfiguration(key);
 		if (value == null) {
 			return defaultValue;
 		}

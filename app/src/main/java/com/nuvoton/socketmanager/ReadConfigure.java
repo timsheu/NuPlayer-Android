@@ -95,7 +95,7 @@ public class ReadConfigure {
                     e.printStackTrace();
                 }
             }
-        });
+        }).run();
 
         return readConfigure;
     }
