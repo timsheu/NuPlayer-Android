@@ -251,7 +251,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     // FFMPEG interface implementation
 
     public void onFFDataSourceLoaded(FFmpegError err, FFmpegStreamInfo[] streams){
-        checkAliveTimer.cancel();
+        if (checkAliveTimer != null){
+            checkAliveTimer.cancel();
+        }
         checkAliveTimer = new Timer();
         if (err != null){
             String format = "Could not open stream";
