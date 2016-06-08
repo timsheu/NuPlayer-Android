@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nuvoton.skyeye.SettingFragment"
+    tools:context="com.nuvoton.nuplayer.SettingFragment"
     android:orientation="vertical">
     <ListView android:id="@android:id/list"
         android:layout_width="fill_parent"

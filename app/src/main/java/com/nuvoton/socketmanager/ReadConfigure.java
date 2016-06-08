@@ -53,7 +53,7 @@ public class ReadConfigure {
         Log.d(TAG, "getInstance: ");
         contextLocal = context;
         for (int i=0; i<5; i++){
-            initSharedPreference(i);
+            initSharedPreference(i, false);
         }
         new Thread(new Runnable() {
             @Override
@@ -162,12 +162,14 @@ public class ReadConfigure {
         return list;
     }
 
-    private static void initSharedPreference(int cameraSerial){
+    private static void initSharedPreference(int cameraSerial, boolean clear){
         String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
         Log.d(TAG, "initSharedPreference: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();
+        if (clear == true){
+            editor.clear();
+        }
         editor.putBoolean("Adaptive", false);
         editor.putBoolean("Fixed Quality", false);
         editor.putBoolean("Fixed Bit Rate", false);

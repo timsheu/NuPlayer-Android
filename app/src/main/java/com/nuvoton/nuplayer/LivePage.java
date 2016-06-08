@@ -1,11 +1,8 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -15,7 +12,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import android.app.FragmentManager;
 import android.view.Surface;
 import android.view.View;
-import android.widget.VideoView;
 
 import java.util.ArrayList;
 

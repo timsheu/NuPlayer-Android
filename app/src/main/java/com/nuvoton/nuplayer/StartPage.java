@@ -1,4 +1,4 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +33,7 @@ public class StartPage extends AppCompatActivity {
 
     private void openLivePage(int pageIndex){
         Intent intent = new Intent();
-        if (pageIndex == 0){ // skyeye live page
+        if (pageIndex == 0){ // nuplayer live page
             intent.putExtra("Platform", "SkyEye");
             intent.setClass(this, SelectCamera.class);
         }else if (pageIndex == 1){

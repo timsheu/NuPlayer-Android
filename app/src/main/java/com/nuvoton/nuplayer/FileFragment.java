@@ -1,6 +1,7 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.longevitysoft.android.xml.plist.domain.PListObject;
+import com.nuvoton.socketmanager.ReadConfigure;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A fragment representing a list of Items.
@@ -19,6 +26,7 @@ import java.util.ArrayList;
  * interface.
  */
 public class FileFragment extends Fragment {
+    ReadConfigure configure;
     private static final String TAG = "FileFragment";
 
     private String platform, cameraSerial;
@@ -51,9 +59,11 @@ public class FileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_file_list, container, false);
+        configure = ReadConfigure.getInstance(getActivity());
         platform = getArguments().getString("Platform");
         cameraSerial = getArguments().getString("CameraSerial");
         initList(view);
+        sendListFilename();
         // Set the adapter
         return view;
     }
@@ -92,8 +102,29 @@ public class FileFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void sendFileListCommand(){
+    private URL getDeviceURL(){
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        String urlString = preference.getString("URL", "DEFAULT");
+        Log.d(TAG, "sendFileListCommand: " + urlString);
+        String [] ipCut = urlString.split("/");
+        String ip = ipCut[2];
+        Log.d(TAG, "sendFileListCommand: " + ip);
+        try {
+            URL url = new URL("http://" + ip + ":80/");
+            return url;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    private void sendListFilename(){
+        URL url = getDeviceURL();
+        String command;
+        ArrayList<Map> fileCommandSet = configure.fileCommandSet;
+        Map<String, PListObject> targetCommand = fileCommandSet.get(0);
+        Log.d(TAG, "sendListFilename: " + targetCommand.keySet().toString() + ", " + targetCommand.values().toString());
     }
 
 

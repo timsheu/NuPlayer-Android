@@ -1,4 +1,4 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 import org.junit.Test;
 

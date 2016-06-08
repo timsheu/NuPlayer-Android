@@ -6,7 +6,7 @@ import com.longevitysoft.android.util.Stringer;
  * Represents a simple plist string element. Not to be confused with
  * {@link java.lang.String}.
  */
-public class String extends PListObject implements
+public class string extends PListObject implements
 		IPListSimpleObject<java.lang.String> {
 
 	protected Stringer str;
@@ -16,7 +16,7 @@ public class String extends PListObject implements
 	 */
 	private static final long serialVersionUID = -8134261357175236382L;
 
-	public String() {
+	public string() {
 		setType(PListObjectType.STRING);
 		str = new Stringer();
 	}

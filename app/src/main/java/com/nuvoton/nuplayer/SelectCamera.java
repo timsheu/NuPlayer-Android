@@ -1,4 +1,4 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

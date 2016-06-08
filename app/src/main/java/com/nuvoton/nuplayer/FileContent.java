@@ -1,4 +1,4 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 /**
  * Created by timsheu on 4/25/16.

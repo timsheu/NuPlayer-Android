@@ -1,9 +1,8 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.renderscript.Type;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;

@@ -28,7 +28,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 //import com.appunite.ffmpeg.R;
-import com.nuvoton.skyeye.R;
+import com.nuvoton.nuplayer.R;
 
 public class SeekerView extends View {
 	

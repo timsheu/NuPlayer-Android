@@ -1,4 +1,4 @@
-package com.nuvoton.skyeye;
+package com.nuvoton.nuplayer;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

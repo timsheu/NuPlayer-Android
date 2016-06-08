@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@android:color/darker_gray"
-    tools:context="com.nuvoton.skyeye.StartPage">
+    tools:context="com.nuvoton.nuplayer.StartPage">
     <TextView
         android:text="Choose Platform"
         android:textSize="22dp"
