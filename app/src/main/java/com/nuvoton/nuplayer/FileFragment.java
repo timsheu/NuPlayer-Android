@@ -146,6 +146,7 @@ public class FileFragment extends Fragment implements SocketInterface{
     public void updateFileList(ArrayList<FileContent> fileList) {
         MyFileRecyclerViewAdapter adapter = new MyFileRecyclerViewAdapter(fileList);
         recyclerView.setAdapter(adapter);
+//        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
     }
 
     /**

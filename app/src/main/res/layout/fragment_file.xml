@@ -16,23 +16,23 @@
         android:gravity="center_vertical"
         >
         <TextView
-            android:text="123"
+            android:text="filename"
             android:id="@+id/file_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="32dp"
             android:textAppearance="?attr/textAppearanceListItem"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
 
-            />
+            android:paddingLeft="10dp" />
         <TextView
-            android:text="abc"
+            android:text="filedate"
             android:id="@+id/file_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="32dp"
             android:textAppearance="?attr/textAppearanceListItem"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            />
+            android:paddingLeft="10dp" />
     </LinearLayout>
 </LinearLayout>
