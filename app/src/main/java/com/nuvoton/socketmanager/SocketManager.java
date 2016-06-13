@@ -3,6 +3,8 @@ package com.nuvoton.socketmanager;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.nuvoton.nuplayer.FileContent;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -11,8 +13,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Timer;
 
 /**
@@ -140,13 +145,24 @@ public class SocketManager {
                     Log.d(TAG, String.valueOf(avilable1));
                 }else if (httpcmd.equals(CMDFILELIST)) {
                     String [] fileList = result.split("\n");
+                    ArrayList<FileContent> fileContentList = new ArrayList<>();
+                    int i = 0;
                     for (String s: fileList) {
-                        String [] temp = s.split("_");
-                        String [] temp2 = temp[2].split(".");
-
+                        if (s.contains(".mp4")){
+                            String [] temp = s.split("_");
+                            String time = new String(temp[2]);
+                            String [] temp2 = time.split("\\.");
+                            String time2 = new String(temp2[0]);
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+                            Date date = sdf.parse(time2);
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                            FileContent content = new FileContent(s, sdf2.format(date), String.valueOf(i));
+                            fileContentList.add(content);
+                            i++;
+                            Log.d(TAG, "onPostExecute: " + sdf2.format(date));
+                        }
                     }
-                    ArrayList<String> fileArrayList = new ArrayList<String>(Arrays.asList(fileList));
-                    socketInterface.updateFileList(fileArrayList);
+                    socketInterface.updateFileList(fileContentList);
                 }else {
                     Log.d(TAG,"other cmd");
                 }

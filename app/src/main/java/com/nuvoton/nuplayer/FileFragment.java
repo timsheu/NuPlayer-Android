@@ -99,14 +99,13 @@ public class FileFragment extends Fragment implements SocketInterface{
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         Log.d(TAG, "initList: " + platform + ", " + cameraSerial);
-        ArrayList<FileContent> itemsData = new ArrayList<>();
-        for (int i=0; i<50; i++){
-            FileContent content = new FileContent(String.valueOf(i), "Test Name" + String.valueOf(i), "Test dDate" + String.valueOf(i));
-            itemsData.add(content);
-        }
+//        ArrayList<FileContent> itemsData = new ArrayList<>();
+//        for (int i=0; i<50; i++){
+//            FileContent content = new FileContent(String.valueOf(i), "Test Name" + String.valueOf(i), "Test dDate" + String.valueOf(i));
+//            itemsData.add(content);
+//        }
 
-        MyFileRecyclerViewAdapter adapter = new MyFileRecyclerViewAdapter(itemsData);
-        recyclerView.setAdapter(adapter);
+
     }
 
     private String getDeviceURL(){
@@ -144,8 +143,9 @@ public class FileFragment extends Fragment implements SocketInterface{
     }
 
     @Override
-    public void updateFileList(ArrayList<String> fileList) {
-
+    public void updateFileList(ArrayList<FileContent> fileList) {
+        MyFileRecyclerViewAdapter adapter = new MyFileRecyclerViewAdapter(fileList);
+        recyclerView.setAdapter(adapter);
     }
 
     /**
