@@ -126,13 +126,13 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
             public void onTabSelected(int position, boolean wasSelected){
                 index = position;
                 if (position == 0){
-                    LiveFragment fragment = new LiveFragment();
+                    LiveFragment fragment = LiveFragment.newInstance(bundle);
                     fragment.setArguments(bundle);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fragment_content, fragment)
                             .commit();
                 }else if (position == 1){
-                    FileFragment fragment = FileFragment.newInstance(position);
+                    FileFragment fragment = FileFragment.newInstance(bundle);
                     fragment.setArguments(bundle);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fragment_content, fragment)
@@ -156,14 +156,12 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         bundle.putString("CameraSerial", cameraSerial);
         index = savedIndex;
         if (index == 0){
-            LiveFragment fragment = new LiveFragment();
-            fragment.setArguments(bundle);
+            LiveFragment fragment = LiveFragment.newInstance(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_content, fragment)
                     .commit();
         }else if (index == 1){
-            FileFragment fragment = FileFragment.newInstance(index);
-            fragment.setArguments(bundle);
+            FileFragment fragment = FileFragment.newInstance(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_content, fragment)
                     .commit();

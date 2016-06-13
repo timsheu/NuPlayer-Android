@@ -10,4 +10,5 @@ import java.util.ArrayList;
 public interface SocketInterface {
     void showToastMessage(String message);
     void updateFileList(ArrayList<FileContent> fileList);
+    void deviceIsAlive();
 }

@@ -33,6 +33,7 @@ public class SocketManager {
     public static final String CMDSDCAP="3";
     public static final String CMDRSTOP="4";
     public static final String CMDFILELIST="5";
+    public static final String CMDCHECKSTORAGE="6";
 
     Timer timer = new Timer();
 
@@ -163,7 +164,11 @@ public class SocketManager {
                         }
                     }
                     socketInterface.updateFileList(fileContentList);
-                }else {
+                }else if (httpcmd.equals(CMDCHECKSTORAGE)){
+                    if(result != null) {
+                        socketInterface.deviceIsAlive();
+                    }
+                }else{
                     Log.d(TAG,"other cmd");
                 }
 

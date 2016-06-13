@@ -46,11 +46,9 @@ public class FileFragment extends Fragment implements SocketInterface{
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public static FileFragment newInstance(int index){
+    public static FileFragment newInstance(Bundle b){
         FileFragment fragment = new FileFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("index", index);
-        fragment.setArguments(bundle);
+        fragment.setArguments(b);
         return fragment;
     }
 
@@ -147,6 +145,11 @@ public class FileFragment extends Fragment implements SocketInterface{
         MyFileRecyclerViewAdapter adapter = new MyFileRecyclerViewAdapter(fileList);
         recyclerView.setAdapter(adapter);
 //        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+    }
+
+    @Override
+    public void deviceIsAlive() {
+
     }
 
     /**
