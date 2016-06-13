@@ -136,19 +136,19 @@ public class Dict extends PListObject {
 	}
 
 	/**
-	 * Get an Integer configuration value for the given key.
+	 * Get an iInteger configuration value for the given key.
 	 * 
 	 * @param key
 	 *            The text of the key to look up in the configuration
 	 *            dictionary.
-	 * @return The Integer value of the specified key.
+	 * @return The iInteger value of the specified key.
 	 */
-	public Integer getConfigurationInteger(java.lang.String key) {
-		return (Integer) getConfigurationObject(key);
+	public iInteger getConfigurationInteger(java.lang.String key) {
+		return (iInteger) getConfigurationObject(key);
 	}
 
 	/**
-	 * Get an Integer configuration value for the given key. If there is no
+	 * Get an iInteger configuration value for the given key. If there is no
 	 * value for the given key, then return the default value.
 	 * 
 	 * @param key
@@ -157,12 +157,12 @@ public class Dict extends PListObject {
 	 * @param defaultValue
 	 *            The default value to return if they key has no associated
 	 *            value.
-	 * @return The Integer value of the specified key, or defaultValue if the
+	 * @return The iInteger value of the specified key, or defaultValue if the
 	 *         value for keyName is null.
 	 */
-	public Integer getConfigurationIntegerWithDefault(java.lang.String key,
-			Integer defaultValue) {
-		Integer value = getConfigurationInteger(key);
+	public iInteger getConfigurationIntegerWithDefault(java.lang.String key,
+													   iInteger defaultValue) {
+		iInteger value = getConfigurationInteger(key);
 		if (value == null) {
 			return defaultValue;
 		}
@@ -171,15 +171,15 @@ public class Dict extends PListObject {
 	}
 
 	/**
-	 * Get an Integer configuration value for the given key.
+	 * Get an iInteger configuration value for the given key.
 	 * 
 	 * @param key
 	 *            The text of the key to look up in the configuration
 	 *            dictionary.
-	 * @return The Integer value of the specified key.
+	 * @return The iInteger value of the specified key.
 	 */
-	public Array getConfigurationArray(java.lang.String key) {
-		return (Array) getConfigurationObject(key);
+	public aArray getConfigurationArray(java.lang.String key) {
+		return (aArray) getConfigurationObject(key);
 	}
 
 	/*

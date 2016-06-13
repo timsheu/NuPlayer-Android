@@ -15,7 +15,7 @@ package com.longevitysoft.android.xml.plist.domain;
 /**
  * Represents a simple plist int element.
  */
-public class Integer extends PListObject implements
+public class iInteger extends PListObject implements
 		IPListSimpleObject<java.lang.Integer> {
 
 	protected java.lang.Integer intgr;
@@ -25,7 +25,7 @@ public class Integer extends PListObject implements
 	 */
 	private static final long serialVersionUID = -5952071046933925529L;
 
-	public Integer() {
+	public iInteger() {
 		setType(PListObjectType.INTEGER);
 	}
 

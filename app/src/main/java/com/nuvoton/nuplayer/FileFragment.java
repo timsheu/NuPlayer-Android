@@ -10,10 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.longevitysoft.android.xml.plist.domain.PListObject;
 import com.longevitysoft.android.xml.plist.domain.sString;
 import com.nuvoton.socketmanager.ReadConfigure;
+import com.nuvoton.socketmanager.SocketInterface;
+import com.nuvoton.socketmanager.SocketManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,8 +29,9 @@ import java.util.Map;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class FileFragment extends Fragment {
+public class FileFragment extends Fragment implements SocketInterface{
     ReadConfigure configure;
+    SocketManager socketManager;
     private static final String TAG = "FileFragment";
 
     private String platform, cameraSerial;
@@ -63,6 +67,8 @@ public class FileFragment extends Fragment {
         configure = ReadConfigure.getInstance(getActivity());
         platform = getArguments().getString("Platform");
         cameraSerial = getArguments().getString("CameraSerial");
+        socketManager = new SocketManager();
+        socketManager.setSocketInterface(this);
         initList(view);
         sendListFilename();
         // Set the adapter
@@ -95,7 +101,7 @@ public class FileFragment extends Fragment {
         Log.d(TAG, "initList: " + platform + ", " + cameraSerial);
         ArrayList<FileContent> itemsData = new ArrayList<>();
         for (int i=0; i<50; i++){
-            FileContent content = new FileContent(String.valueOf(i), "Test Name" + String.valueOf(i), "Test Date" + String.valueOf(i));
+            FileContent content = new FileContent(String.valueOf(i), "Test Name" + String.valueOf(i), "Test dDate" + String.valueOf(i));
             itemsData.add(content);
         }
 
@@ -103,7 +109,7 @@ public class FileFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private URL getDeviceURL(){
+    private String getDeviceURL(){
         String cameraName = "Setup Camera " + cameraSerial;
         SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
         String urlString = preference.getString("URL", "DEFAULT");
@@ -111,25 +117,36 @@ public class FileFragment extends Fragment {
         String [] ipCut = urlString.split("/");
         String ip = ipCut[2];
         Log.d(TAG, "sendFileListCommand: " + ip);
-        try {
-            URL url = new URL("http://" + ip + ":80/");
-            return url;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+        String url = "http://" + ip + ":80/";
+        return url;
     }
 
     private void sendListFilename(){
-        URL url = getDeviceURL();
-        sString name, baseCommand;
+        String command = getDeviceURL();
+        sString name, baseCommand, action, group;
         ArrayList<Map> fileCommandSet = configure.fileCommandSet;
         Map<String, PListObject> targetCommand = fileCommandSet.get(0);
         name = (sString) targetCommand.get("Name");
         baseCommand = (sString) targetCommand.get("Base Command");
-        Log.d(TAG, "sendListFilename: " + name.getValue() + ", " + baseCommand.getValue());
+        action = (sString) targetCommand.get("action");
+        group = (sString) targetCommand.get("group");
+        command = command + baseCommand.getValue() + "?action=" + action.getValue() + "&group=" + group.getValue();
+        if (socketManager != null){
+            socketManager.executeSendGetTask(command, SocketManager.CMDFILELIST);
+        }
     }
 
+    //delegate
+    @Override
+    public void showToastMessage(String message) {
+        Toast.makeText(getActivity().getBaseContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void updateFileList(ArrayList<String> fileList) {
+
+    }
 
     /**
      * This interface must be implemented by activities that contain this

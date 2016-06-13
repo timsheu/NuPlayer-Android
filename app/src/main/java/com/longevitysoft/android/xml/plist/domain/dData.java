@@ -22,7 +22,7 @@ import com.longevitysoft.android.util.Stringer;
 /**
  * Represents a simple PList data element. The value is stored as a raw string.
  */
-public class Data extends PListObject implements
+public class dData extends PListObject implements
 		IPListSimpleObject<java.lang.String> {
 
 	protected Stringer dataStringer;
@@ -33,7 +33,7 @@ public class Data extends PListObject implements
 	 */
 	private static final long serialVersionUID = -3101592260075687323L;
 
-	public Data() {
+	public dData() {
 		setType(PListObjectType.DATA);
 		dataStringer = new Stringer();
 	}

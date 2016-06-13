@@ -78,7 +78,7 @@ import java.util.Arrays;
  * POSSIBILITY OF SUCH DAMAGE.
  * 
  * @version 2.2
- * @author Mikael Grev Date: 2004-aug-02 Time: 11:31:11
+ * @author Mikael Grev dDate: 2004-aug-02 Time: 11:31:11
  */
 
 public class Base64 {

@@ -14,7 +14,7 @@ package com.longevitysoft.android.xml.plist.domain;
 
 /**
  * Interface that simple PList objects implement. This includes all objects
- * besides from {@link Array}s and {@link Dict}s.
+ * besides from {@link aArray}s and {@link Dict}s.
  */
 public interface IPListSimpleObject<E extends Object> {
 

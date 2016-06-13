@@ -2,13 +2,10 @@ package com.nuvoton.socketmanager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.JetPlayer;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 
-import com.longevitysoft.android.util.*;
 import com.longevitysoft.android.xml.plist.*;
-import com.longevitysoft.android.xml.plist.domain.Array;
+import com.longevitysoft.android.xml.plist.domain.aArray;
 import com.longevitysoft.android.xml.plist.domain.Dict;
 import com.longevitysoft.android.xml.plist.domain.PList;
 import com.longevitysoft.android.xml.plist.domain.PListObject;
@@ -18,11 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -153,9 +147,9 @@ public class ReadConfigure {
             e.printStackTrace();
         }
         PList plist = ((PListXMLHandler) parser.getHandler()).getPlist();
-        Array commandSetArray = (Array) plist.getRootElement(); // Root array
-        for (int i = 0; i < commandSetArray.size() ; i++) { // parse every NSDictionary
-            Dict commandSet = (Dict) commandSetArray.get(i); // NSDictionary at index "i"
+        aArray commandSetAArray = (aArray) plist.getRootElement(); // Root array
+        for (int i = 0; i < commandSetAArray.size() ; i++) { // parse every NSDictionary
+            Dict commandSet = (Dict) commandSetAArray.get(i); // NSDictionary at index "i"
             Map<String, PListObject> commands = commandSet.getConfigMap(); // Convert NSDictionary to Java Map
             list.add(commands);
         }

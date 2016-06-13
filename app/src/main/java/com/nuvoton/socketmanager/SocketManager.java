@@ -1,10 +1,7 @@
 package com.nuvoton.socketmanager;
 
 import android.os.AsyncTask;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -14,21 +11,24 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by timsheu on 6/3/16.
  */
 public class SocketManager {
+    private SocketInterface socketInterface = null;
     private URL url;
     private static final String TAG = "SocketManager";
-    private  static final String CMDSNAPSHOT="0";
-    private  static final String CMDRSTART="1";
-    private  static final String CMDCHECKSD="2";
-    private  static final String CMDSDCAP="3";
-    private  static final String CMDRSTOP="4";
-    private  static  final String CMDOTHER="-1";
+    public static final String CMDSNAPSHOT="0";
+    public static final String CMDRSTART="1";
+    public static final String CMDCHECKSD="2";
+    public static final String CMDSDCAP="3";
+    public static final String CMDRSTOP="4";
+    public static final String CMDFILELIST="5";
+
     Timer timer = new Timer();
 
     private InputStream OpenHttpConnection(String urlString) throws IOException
@@ -109,7 +109,9 @@ public class SocketManager {
                 if(httpcmd.equals(CMDSNAPSHOT)){
                     jsonObject = new JSONObject(result);
                     if(jsonObject.getString("value").equals("0")) {
+                        socketInterface.showToastMessage("Snapshot Success !!");
                     }else{
+                        socketInterface.showToastMessage("Snapshot Fail !!");
                     }
                 }else if (httpcmd.equals(CMDRSTART)) {
                     jsonObject = new JSONObject(result);
@@ -132,10 +134,19 @@ public class SocketManager {
 
                     jsonObject = new JSONObject(tmp[3]);
                     //Log.d(TAG,jsonObject.getString("unit"));
-                    // int unit = Integer.parseInt(jsonObject.getString("unit"));
+                    // int unit = iInteger.parseInt(jsonObject.getString("unit"));
                     int available=Integer.parseInt(jsonObject.getString("available"));
                     float avilable1=(((float)available)/(1024*1024));
                     Log.d(TAG, String.valueOf(avilable1));
+                }else if (httpcmd.equals(CMDFILELIST)) {
+                    String [] fileList = result.split("\n");
+                    for (String s: fileList) {
+                        String [] temp = s.split("_");
+                        String [] temp2 = temp[2].split(".");
+
+                    }
+                    ArrayList<String> fileArrayList = new ArrayList<String>(Arrays.asList(fileList));
+                    socketInterface.updateFileList(fileArrayList);
                 }else {
                     Log.d(TAG,"other cmd");
                 }
@@ -145,5 +156,13 @@ public class SocketManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setSocketInterface(SocketInterface socketInterface){
+        this.socketInterface = socketInterface;
+    }
+
+    public void executeSendGetTask(String command, String commandType){
+        new SendGetTask().execute(command, commandType);
     }
 }

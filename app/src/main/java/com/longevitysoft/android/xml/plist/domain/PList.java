@@ -116,7 +116,7 @@ public class PList {
 						.append(Constants.PIPE).append(obj.getType())
 						.append(Constants.PIPE).append(obj.toString())
 						.append(Constants.PIPE).toString());
-		Array parent = (Array) stack.pop();
+		aArray parent = (aArray) stack.pop();
 		parent.add(obj);
 		stack.push(parent);
 	}
@@ -126,7 +126,7 @@ public class PList {
 	 * {@PListObject}s onto the {@PList}. The previous
 	 * object that was stacked affects the context of the current object being
 	 * stacked. For example - if the previous element stacked was an
-	 * {@link Array} or {@link Dict} - the current object being stacked will be
+	 * {@link aArray} or {@link Dict} - the current object being stacked will be
 	 * a child.
 	 * 
 	 * @param obj
@@ -144,10 +144,10 @@ public class PList {
 					"PList objects with Dict parents require a key.");
 		}
 		if (stackCtxNestedDepth > 0 && !stackCtxInDict && !stackCtxInArray) {
-			// if obj is not at root, its parent should be an Array or
+			// if obj is not at root, its parent should be an aArray or
 			// Dict
 			throw new Exception(
-					"PList elements that are not at the root should have an Array or Dict parent.");
+					"PList elements that are not at the root should have an aArray or Dict parent.");
 		}
 		switch (obj.getType()) {
 		case DICT:
@@ -220,8 +220,8 @@ public class PList {
 		}
 		PListObject ret = null;
 		if (tag.equalsIgnoreCase(Constants.TAG_INTEGER)) {
-			ret = new Integer();
-			((Integer) ret).setValue(value);
+			ret = new iInteger();
+			((iInteger) ret).setValue(value);
 		} else if (tag.equalsIgnoreCase(Constants.TAG_STRING)) {
 			ret = new sString();
 			((sString) ret).setValue(value);
@@ -229,19 +229,19 @@ public class PList {
 			ret = new Real();
 			((Real) ret).setValue(value);
 		} else if (tag.equalsIgnoreCase(Constants.TAG_DATE)) {
-			ret = new Date();
-			((Date) ret).setValue(value);
+			ret = new dDate();
+			((dDate) ret).setValue(value);
 		} else if (tag.equalsIgnoreCase(Constants.TAG_BOOL_FALSE)) {
 			ret = new False();
 		} else if (tag.equalsIgnoreCase(Constants.TAG_BOOL_TRUE)) {
 			ret = new True();
 		} else if (tag.equalsIgnoreCase(Constants.TAG_DATA)) {
-			ret = new Data();
-			((Data) ret).setValue(value.trim(), true);
+			ret = new dData();
+			((dData) ret).setValue(value.trim(), true);
 		} else if (tag.equalsIgnoreCase(Constants.TAG_DICT)) {
 			ret = new Dict();
 		} else if (tag.equalsIgnoreCase(Constants.TAG_PLIST_ARRAY)) {
-			ret = new Array();
+			ret = new aArray();
 		}
 		return ret;
 	}

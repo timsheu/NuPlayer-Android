@@ -21,7 +21,7 @@ import android.util.Log;
 /**
  * Represents a simple plist date elements.
  */
-public class Date extends PListObject implements
+public class dDate extends PListObject implements
 		IPListSimpleObject<java.util.Date> {
 
 	/**
@@ -29,7 +29,7 @@ public class Date extends PListObject implements
 	 */
 	private static final long serialVersionUID = 3846688440069431376L;
 
-	private static final java.lang.String TAG = "Date";
+	private static final java.lang.String TAG = "dDate";
 
 	/**
 	 * The parsed date object.
@@ -41,7 +41,7 @@ public class Date extends PListObject implements
 	 */
 	private SimpleDateFormat iso8601Format;
 
-	public Date() {
+	public dDate() {
 		setType(PListObjectType.DATE);
 		iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	}

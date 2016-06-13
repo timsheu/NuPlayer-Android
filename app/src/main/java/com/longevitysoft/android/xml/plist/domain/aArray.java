@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Represents a PList Array object. Essentially a proxy for a
+ * Represents a PList aArray object. Essentially a proxy for a
  * {@link java.util.List} implementation that contains a list of
  * {@link PListObject}s.
  * 
  * @author fbeachler
  * 
  */
-public class Array extends PListObject implements java.util.List<PListObject> {
+public class aArray extends PListObject implements java.util.List<PListObject> {
 
 	private ArrayList<PListObject> data;
 
@@ -38,7 +38,7 @@ public class Array extends PListObject implements java.util.List<PListObject> {
 	/**
 	 * 
 	 */
-	public Array() {
+	public aArray() {
 		setType(PListObjectType.ARRAY);
 		data = new ArrayList<PListObject>();
 	}
@@ -46,7 +46,7 @@ public class Array extends PListObject implements java.util.List<PListObject> {
 	/**
 	 * @param collection
 	 */
-	public Array(Collection<? extends PListObject> collection) {
+	public aArray(Collection<? extends PListObject> collection) {
 		setType(PListObjectType.ARRAY);
 		data = new ArrayList<PListObject>(collection);
 	}
@@ -54,7 +54,7 @@ public class Array extends PListObject implements java.util.List<PListObject> {
 	/**
 	 * @param capacity
 	 */
-	public Array(int capacity) {
+	public aArray(int capacity) {
 		setType(PListObjectType.ARRAY);
 		data = new ArrayList<PListObject>(capacity);
 	}
