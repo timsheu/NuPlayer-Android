@@ -147,7 +147,7 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
                 bottomNavigation.setNotification(0, position);
             }
         });
-
+        changeFragment(0);
     }
 
     private void changeFragment(int savedIndex){

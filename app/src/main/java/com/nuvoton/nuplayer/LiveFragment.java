@@ -7,19 +7,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.view.View.OnClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.os.Handler;
 
 import com.appunite.ffmpeg.FFmpegError;
 import com.appunite.ffmpeg.FFmpegPlayer;
@@ -38,20 +44,24 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface{
+    private static int counter = 0;
+    private Handler redDotHandler = new Handler(Looper.getMainLooper()),
+            checkHandler = new Handler(Looper.getMainLooper()),
+            pollingHandler = new Handler(Looper.getMainLooper());
+    private boolean flashOn = true;
     private String localURL;
     private SocketManager socketManager;
     private ReadConfigure configure;
-    private Timer checkAliveTimer;
     private int orientation;
     private String plarform, cameraSerial;
     private ProgressBar progressBar;
+    private TextView onlineText;
+    private ImageView redDot;
     private boolean isPlaying = false, isTracking = false;
     private int mCurrentTimeS;
     private View thisView;
@@ -77,10 +87,12 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                 playButton.setEnabled(false);
                 if (isPlaying == false){
                     isPlaying = true;
-                    mMpegPlayer.resume();
+                    repeatCheck(true);
                 }else {
                     isPlaying = false;
-                    mMpegPlayer.pause();
+                    mMpegPlayer.stop();
+                    repeatRedDot(false);
+                    repeatPolling(false);
                 }
                 break;
             case R.id.expandButton:
@@ -145,7 +157,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setEnabled(false);
 
+        onlineText = (TextView) thisView.findViewById(R.id.onlineText);
         progressBar = (ProgressBar) thisView.findViewById(R.id.progressBar);
+        redDot = (ImageView) thisView.findViewById(R.id.redDot);
     }
 
     @Override
@@ -154,14 +168,20 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         thisView = inflater.inflate(R.layout.fragment_live, container, false);
         registerUI();
         determineOrientation();
-        Bundle bundle = getArguments();
-
         if (socketManager == null){
             socketManager = new SocketManager();
         }
         socketManager.setSocketInterface(this);
         // Inflate the layout for this fragment
         return thisView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        repeatCheck(false);
+        repeatRedDot(false);
+        repeatPolling(false);
     }
 
     @Override
@@ -183,12 +203,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
         configure = ReadConfigure.getInstance(getActivity());
-        Bundle bundle = getArguments();
-        if (bundle != null){
-            plarform = getArguments().getString("Platform");
-            cameraSerial = getArguments().getString("CameraSerial");
-        }
-//        sendCheckStorage();
     }
 
     @Override
@@ -213,7 +227,8 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             }
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
-        setDataSource();
+        repeatCheck(false);
+        repeatCheck(true);
     }
 
     private void populateViewForOrientation(LayoutInflater inflater, ViewGroup viewGroup) {
@@ -229,30 +244,22 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     @Override
     public void onStart() {
         super.onStart();
-        Bundle bundle = getArguments();
-        if (bundle == null){
-            Log.d(TAG, "onStart: null");
+        try{
+            mCallback = (OnHideBottomBarListener) getActivity();
+        }catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString() + " must implement onHideBottomBarListener");
         }
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Bundle bundle = getArguments();
-        if (bundle == null){
-            Log.d(TAG, "onStart: null");
+        if (bundle != null){
+            plarform = getArguments().getString("Platform");
+            cameraSerial = getArguments().getString("CameraSerial");
         }
-    }
-
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        try{
-            mCallback = (OnHideBottomBarListener) activity;
-        }catch (ClassCastException e){
-            throw new ClassCastException(activity.toString() + " must implement onHideBottomBarListener");
-        }
+        repeatCheck(true);
     }
 
     public void determineOrientation(){
@@ -264,11 +271,69 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         }
     }
 
-    public class TimerSetDataSource extends TimerTask{
-        public void run(){
-            setDataSource();
+    Runnable timerSetDataSource = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "timer set data source run: ");
+            checkHandler.postDelayed(timerSetDataSource, 5000);
+            sendCheckStorage();
         }
     };
+
+    Runnable timerSetRedDot = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "timer set red dot run: " + String.valueOf(flashOn));
+            if (flashOn == true){
+                redDot.setImageResource(R.drawable.recordflashoff);
+                flashOn = false;
+            }else {
+                redDot.setImageResource(R.drawable.recordflashon);
+                flashOn = true;
+            }
+            redDotHandler.postDelayed(timerSetRedDot, 1000);
+        }
+    };
+
+    Runnable timerPollingCheck = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "timer polling check run: " + String.valueOf(counter));
+            if (counter >= 5){
+                onlineText.setText(R.string.offline);
+//                repeatCheck(true);
+//                repeatRedDot(false);
+//                repeatPolling(false);
+            }
+            counter++;
+            pollingHandler.postDelayed(timerPollingCheck, 1000);
+        }
+    };
+
+    private void repeatCheck(boolean option){
+        if (option == true){
+            timerSetDataSource.run();
+        }else {
+            checkHandler.removeCallbacks(timerSetDataSource);
+        }
+    }
+
+    private void repeatRedDot(boolean option){
+        if (option == true){
+            timerSetRedDot.run();
+        }else {
+            redDotHandler.removeCallbacks(timerSetRedDot);
+        }
+    }
+
+    private void repeatPolling(boolean option){
+        if (option == true){
+            timerPollingCheck.run();
+        }else {
+            pollingHandler.removeCallbacks(timerPollingCheck);
+        }
+    }
+
 
     private void setDataSource() {
         progressBar.post(new Runnable() {
@@ -285,28 +350,27 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         params.put("ass_default_font_path", assFont.getAbsolutePath());
         params.put("fflags", "nobuffer");
         params.put("probesize", "5120");
+        params.put("flush_packets", "1");
+        mMpegPlayer.setMpegListener(this);
         mMpegPlayer.setDataSource(localURL, params, FFmpegPlayer.UNKNOWN_STREAM, mAudioStreamNo,
                 mSubtitleStreamNo);
-        mMpegPlayer.setMpegListener(this);
-        mMpegPlayer.pause();
-        mMpegPlayer.resume();
     }
 
     // FFMPEG interface implementation
 
     public void onFFDataSourceLoaded(FFmpegError err, FFmpegStreamInfo[] streams){
-        if (checkAliveTimer != null){
-            checkAliveTimer.cancel();
-        }
-        checkAliveTimer = new Timer();
         if (err != null){
             String format = "Could not open stream";
             Log.d(TAG, "onFFDataSourceLoaded: " + format);
             progressBar.setVisibility(View.VISIBLE);
-            checkAliveTimer.schedule(new TimerSetDataSource(), 5000);
+            onlineText.setText(R.string.offline);
+            onlineText.setTextColor(0xFFFFFF);
         }
         Log.d(TAG, "onFFDataSourceLoaded: loaded");
         progressBar.setVisibility(View.GONE);
+        mMpegPlayer.pause();
+        mMpegPlayer.resume();
+        repeatCheck(false);
     }
 
     public void onFFResume(NotPlayingException result){
@@ -321,6 +385,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         Log.d(TAG, "onFFPause: ");
         playButton.setImageResource(R.drawable.play);
         playButton.setEnabled(true);
+        repeatRedDot(false);
     }
 
     public void onFFStop(){
@@ -328,10 +393,12 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         Log.d(TAG, "onFFStop: ");
         playButton.setImageResource(R.drawable.play);
         playButton.setEnabled(true);
+        repeatRedDot(false);
     }
 
     public void onFFUpdateTime(long currentTimeUs, long videoDurationUs, boolean isFinished){
         Log.d(TAG, "onFFUpdateTime: ");
+        counter = 0;
         if ( isTracking == false){
             mCurrentTimeS = (int)(currentTimeUs / 1000000);
             int videoDurationS = (int)(videoDurationUs / 1000000);
@@ -361,6 +428,11 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 
     @Override
     public void deviceIsAlive() {
+        onlineText.setText(R.string.online);
+//        onlineText.setTextColor(0x000000);
+        repeatRedDot(true);
+        repeatCheck(false);
+//        repeatPolling(true);
         setDataSource();
     }
 

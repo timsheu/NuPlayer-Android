@@ -11,4 +11,7 @@
     <string name="wifi_category_title_dvr">Wireless Setup</string>
     <string name="info_category_title_dvr">Device Information</string>
 
+    <string name="online">ONLINE</string>
+    <string name="offline">OFFLINE</string>
+
 </resources>
