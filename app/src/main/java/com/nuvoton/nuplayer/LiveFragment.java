@@ -44,15 +44,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface{
+    private Handler handler = new Handler();
     private static int counter = 0;
-    private Handler redDotHandler = new Handler(Looper.getMainLooper()),
-            checkHandler = new Handler(Looper.getMainLooper()),
-            pollingHandler = new Handler(Looper.getMainLooper());
+    private Timer redDotTimer, checkTimer, pollingTimer;
     private boolean flashOn = true;
     private String localURL;
     private SocketManager socketManager;
@@ -180,8 +181,8 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     public void onPause() {
         super.onPause();
         repeatCheck(false);
-        repeatRedDot(false);
-        repeatPolling(false);
+//        repeatRedDot(false);
+//        repeatPolling(false);
     }
 
     @Override
@@ -270,20 +271,17 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             isHide = false;
         }
     }
-
-    Runnable timerSetDataSource = new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "timer set data source run: ");
-            checkHandler.postDelayed(timerSetDataSource, 5000);
+    private class TimerSetDataSource extends TimerTask{
+        public void run(){
+            Log.d(TAG, "run: timer set data source");
             sendCheckStorage();
         }
-    };
+    }
 
     Runnable timerSetRedDot = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "timer set red dot run: " + String.valueOf(flashOn));
+            Log.d(TAG, "run: timer set red dot handler" + String.valueOf(flashOn));
             if (flashOn == true){
                 redDot.setImageResource(R.drawable.recordflashoff);
                 flashOn = false;
@@ -291,14 +289,26 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                 redDot.setImageResource(R.drawable.recordflashon);
                 flashOn = true;
             }
-            redDotHandler.postDelayed(timerSetRedDot, 1000);
+            handler.postDelayed(this, 1000);
         }
     };
 
-    Runnable timerPollingCheck = new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "timer polling check run: " + String.valueOf(counter));
+    private class TimerSetRedDot extends TimerTask{
+        public void run(){
+            Log.d(TAG, "run: timer set red dot" + String.valueOf(flashOn));
+            if (flashOn == true){
+                redDot.setImageResource(R.drawable.recordflashoff);
+                flashOn = false;
+            }else {
+                redDot.setImageResource(R.drawable.recordflashon);
+                flashOn = true;
+            }
+        }
+    }
+
+    private class TimerPollingCheck extends TimerTask{
+        public void run(){
+            Log.d(TAG, "run: timer polling check");
             if (counter >= 5){
                 onlineText.setText(R.string.offline);
 //                repeatCheck(true);
@@ -306,31 +316,37 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 //                repeatPolling(false);
             }
             counter++;
-            pollingHandler.postDelayed(timerPollingCheck, 1000);
         }
-    };
+    }
 
     private void repeatCheck(boolean option){
+        Log.d(TAG, "repeatCheck: " + String.valueOf(option));
         if (option == true){
-            timerSetDataSource.run();
+            checkTimer = new Timer(true);
+            checkTimer.schedule(new TimerSetDataSource(), 0, 5000);
         }else {
-            checkHandler.removeCallbacks(timerSetDataSource);
+            checkTimer.cancel();
         }
     }
 
     private void repeatRedDot(boolean option){
+        Log.d(TAG, "repeatRedDot: " + String.valueOf(option));
         if (option == true){
-            timerSetRedDot.run();
+            handler.post(timerSetRedDot);
+//            redDotTimer = new Timer(true);
+//            redDotTimer.schedule(new TimerSetRedDot(), 0, 1000);
         }else {
-            redDotHandler.removeCallbacks(timerSetRedDot);
+//            redDotTimer.cancel();
         }
     }
 
     private void repeatPolling(boolean option){
+        Log.d(TAG, "repeatPolling: " + String.valueOf(option));
         if (option == true){
-            timerPollingCheck.run();
+            pollingTimer = new Timer(true);
+            pollingTimer.schedule(new TimerPollingCheck(), 0, 10000);
         }else {
-            pollingHandler.removeCallbacks(timerPollingCheck);
+            pollingTimer.cancel();
         }
     }
 
