@@ -323,7 +323,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             checkTimer = new Timer(true);
             checkTimer.schedule(new TimerSetDataSource(), 0, 5000);
         }else {
-            checkTimer.cancel();
+            if (checkTimer != null){
+                checkTimer.cancel();
+            }
         }
     }
 
@@ -345,7 +347,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             pollingTimer = new Timer(true);
             pollingTimer.schedule(new TimerPollingCheck(), 0, 10000);
         }else {
-            pollingTimer.cancel();
+            if (pollingTimer != null){
+                pollingTimer.cancel();
+            }
         }
     }
 

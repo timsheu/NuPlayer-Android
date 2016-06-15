@@ -1,6 +1,7 @@
 package com.nuvoton.nuplayer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -144,6 +145,14 @@ public class FileFragment extends Fragment implements SocketInterface{
     public void updateFileList(ArrayList<FileContent> fileList) {
         MyFileRecyclerViewAdapter adapter = new MyFileRecyclerViewAdapter(fileList);
         recyclerView.setAdapter(adapter);
+        adapter.setOnRecyclerViewItemClickListener(new MyFileRecyclerViewAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, FileContent data) {
+                Log.d(TAG, "onItemClick: " + data.toString());
+                Intent intent = new Intent(getActivity(), FilePlayActivity.class);
+                startActivity(intent);
+            }
+        });
 //        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
     }
 

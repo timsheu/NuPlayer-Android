@@ -14,7 +14,24 @@ import java.util.ArrayList;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyFileRecyclerViewAdapter extends RecyclerView.Adapter<MyFileRecyclerViewAdapter.ViewHolder> {
+public class MyFileRecyclerViewAdapter extends RecyclerView.Adapter<MyFileRecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
+
+    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener listener){
+        this.onRecyclerViewItemClickListener = listener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (onRecyclerViewItemClickListener != null){
+            onRecyclerViewItemClickListener.onItemClick(v, (FileContent) v.getTag());
+        }
+    }
+
+    public static interface OnRecyclerViewItemClickListener{
+        void onItemClick(View view, FileContent data);
+    }
+
+    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener = null;
 
     private final ArrayList<FileContent> mValues;
 
@@ -26,6 +43,7 @@ public class MyFileRecyclerViewAdapter extends RecyclerView.Adapter<MyFileRecycl
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_file, parent, false);
+        view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
@@ -34,7 +52,7 @@ public class MyFileRecyclerViewAdapter extends RecyclerView.Adapter<MyFileRecycl
         holder.mItem = mValues.get(position);
         holder.mFilaNameView.setText(mValues.get(position).fileName);
         holder.mFileDateView.setText(mValues.get(position).fileDate);
-
+        holder.itemView.setTag(mValues.get(position));
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
