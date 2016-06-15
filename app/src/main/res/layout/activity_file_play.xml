@@ -6,19 +6,24 @@
     tools:context="com.nuvoton.nuplayer.FilePlayActivity">
 
     <com.appunite.ffmpeg.FFmpegSurfaceView
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/fileVideoView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:backgroundTint="#114236"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:background="#036D6E"
         android:layout_alignBottom="@+id/fileVideoView"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        >
 
         <SeekBar
             android:layout_width="0dp"

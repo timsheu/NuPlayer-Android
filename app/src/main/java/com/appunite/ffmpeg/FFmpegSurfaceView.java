@@ -21,6 +21,7 @@ package com.appunite.ffmpeg;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -83,4 +84,23 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 		mCreated = false;
 	}
 
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		float ratio = 1.66f;
+		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+
+		float width = (MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight());
+		float height = (MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom());
+		if (widthMode == MeasureSpec.EXACTLY){
+            Log.d("FFmpegSurface", "onMeasure: " + String.valueOf(width));
+            if (width/height > ratio){
+                height = (width / ratio) - 100;
+            }else{
+                height = (width / ratio);
+            }
+			heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)height, MeasureSpec.EXACTLY);
+		}
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	}
 }

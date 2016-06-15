@@ -71,6 +71,8 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
         mMpegPlayer.stop();
     }
 
+
+
     public void registerUI(){
         playButton = (ImageButton) this.findViewById(R.id.filePlayButton);
         playButton.setOnClickListener(this);
