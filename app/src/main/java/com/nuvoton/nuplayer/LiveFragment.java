@@ -92,8 +92,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                 }else {
                     isPlaying = false;
                     mMpegPlayer.stop();
-                    repeatRedDot(false);
-                    repeatPolling(false);
                 }
                 break;
             case R.id.expandButton:
@@ -181,8 +179,8 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     public void onPause() {
         super.onPause();
         repeatCheck(false);
-//        repeatRedDot(false);
-//        repeatPolling(false);
+        repeatRedDot(false);
+        repeatPolling(false);
     }
 
     @Override
@@ -308,12 +306,12 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 
     private class TimerPollingCheck extends TimerTask{
         public void run(){
-            Log.d(TAG, "run: timer polling check");
+            Log.d(TAG, "run: timer polling check " + String.valueOf(counter));
             if (counter >= 5){
                 onlineText.setText(R.string.offline);
-//                repeatCheck(true);
-//                repeatRedDot(false);
-//                repeatPolling(false);
+                repeatCheck(true);
+                repeatRedDot(false);
+                repeatPolling(false);
             }
             counter++;
         }
@@ -335,8 +333,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             handler.post(timerSetRedDot);
 //            redDotTimer = new Timer(true);
 //            redDotTimer.schedule(new TimerSetRedDot(), 0, 1000);
-        }else {
+        }else if (option == false){
 //            redDotTimer.cancel();
+            handler.removeCallbacks(timerSetRedDot);
         }
     }
 
@@ -394,6 +393,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         Log.d(TAG, "onFFResume: ");
         playButton.setImageResource(R.drawable.pause);
         playButton.setEnabled(true);
+        repeatRedDot(true);
     }
 
     public void onFFPause(NotPlayingException err){
@@ -448,7 +448,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 //        onlineText.setTextColor(0x000000);
         repeatRedDot(true);
         repeatCheck(false);
-//        repeatPolling(true);
+        repeatPolling(true);
         setDataSource();
     }
 
