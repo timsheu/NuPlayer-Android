@@ -19,8 +19,6 @@ import com.nuvoton.socketmanager.ReadConfigure;
 import com.nuvoton.socketmanager.SocketInterface;
 import com.nuvoton.socketmanager.SocketManager;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -31,6 +29,7 @@ import java.util.Map;
  * interface.
  */
 public class FileFragment extends Fragment implements SocketInterface{
+    private String localIP;
     ReadConfigure configure;
     SocketManager socketManager;
     private static final String TAG = "FileFragment";
@@ -117,6 +116,7 @@ public class FileFragment extends Fragment implements SocketInterface{
         Log.d(TAG, "sendFileListCommand: " + ip);
 
         String url = "http://" + ip + ":80/";
+        localIP = new String(ip);
         return url;
     }
 
@@ -150,6 +150,8 @@ public class FileFragment extends Fragment implements SocketInterface{
             public void onItemClick(View view, FileContent data) {
                 Log.d(TAG, "onItemClick: " + data.toString());
                 Intent intent = new Intent(getActivity(), FilePlayActivity.class);
+                String fullUrl = "rtsp://" + localIP + "/file/" + data.toString();
+                intent.putExtra("FileURL", fullUrl);
                 startActivity(intent);
             }
         });

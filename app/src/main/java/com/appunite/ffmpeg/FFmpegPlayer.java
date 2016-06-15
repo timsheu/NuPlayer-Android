@@ -107,6 +107,7 @@ public class FFmpegPlayer {
 			AsyncTask<Long, Void, NotPlayingException> {
 
 		private final FFmpegPlayer player;
+		private long value;
 
 		public SeekTask(FFmpegPlayer player) {
 			this.player = player;
@@ -114,16 +115,17 @@ public class FFmpegPlayer {
 
 		@Override
 		protected NotPlayingException doInBackground(Long... params) {
-			try {
-				player.seekNative(params[0].longValue());
-			} catch (NotPlayingException e) {
-				return e;
-			}
+			value = params[0].longValue();
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(NotPlayingException result) {
+			try {
+				player.seekNative(value);
+			} catch (NotPlayingException e) {
+
+			}
 			if (player.mpegListener != null)
 				player.mpegListener.onFFSeeked(result);
 		}
@@ -168,16 +170,17 @@ public class FFmpegPlayer {
 
 		@Override
 		protected NotPlayingException doInBackground(Void... params) {
-			try {
-				player.resumeNative();
-				return null;
-			} catch (NotPlayingException e) {
-				return e;
-			}
+			return null;
 		}
 
 		@Override
 		protected void onPostExecute(NotPlayingException result) {
+			try {
+				player.resumeNative();
+//				return null;
+			} catch (NotPlayingException e) {
+//				return e;
+			}
 			if (player.mpegListener != null)
 				player.mpegListener.onFFResume(result);
 		}

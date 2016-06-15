@@ -326,6 +326,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             if (checkTimer != null){
                 checkTimer.cancel();
             }
+
         }
     }
 
@@ -387,7 +388,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         }
         Log.d(TAG, "onFFDataSourceLoaded: loaded");
         progressBar.setVisibility(View.GONE);
-        mMpegPlayer.pause();
+//        mMpegPlayer.pause();
         mMpegPlayer.resume();
         repeatCheck(false);
     }

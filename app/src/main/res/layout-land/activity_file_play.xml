@@ -9,7 +9,7 @@
     <com.appunite.ffmpeg.FFmpegSurfaceView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/videoView"
+        android:id="@+id/fileVideoView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:backgroundTint="#114236"
@@ -19,9 +19,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_alignBottom="@+id/videoView"
-        android:layout_alignRight="@+id/videoView"
-        android:layout_alignLeft="@+id/videoView"
+        android:layout_alignBottom="@+id/fileVideoView"
+        android:layout_alignRight="@+id/fileVideoView"
+        android:layout_alignLeft="@+id/fileVideoView"
         android:background="#036D6E"
         >
 
@@ -29,7 +29,7 @@
         <ImageButton
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:id="@+id/playButton"
+            android:id="@+id/filePlayButton"
             android:src="@drawable/play"
             android:scaleType="fitCenter"
             android:background="#036D6E"
@@ -41,7 +41,7 @@
         <ImageButton
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:id="@+id/expandButton"
+            android:id="@+id/fileExpandButton"
             android:src="@drawable/expand"
             android:scaleType="fitCenter"
             android:background="#036D6E"
@@ -53,7 +53,7 @@
         <SeekBar
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
+            android:id="@+id/fileSeekBar"
             android:layout_centerHorizontal="true"
             android:thumbTint="#FFFFFF"
             android:progressTint="#FFFFFF"
@@ -68,7 +68,7 @@
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
+        android:id="@+id/fileProgressBar"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 </android.support.percent.PercentRelativeLayout>

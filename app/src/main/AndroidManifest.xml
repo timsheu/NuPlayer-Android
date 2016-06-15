@@ -21,7 +21,9 @@
             android:name=".LivePage"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".SelectCamera" />
-        <activity android:name=".FilePlayActivity"></activity>
+        <activity
+            android:name=".FilePlayActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>
