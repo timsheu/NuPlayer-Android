@@ -2,13 +2,20 @@ package com.nuvoton.nuplayer;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
+import android.net.Uri;
 import android.os.Environment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,22 +23,24 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.appunite.ffmpeg.FFmpegDisplay;
-import com.appunite.ffmpeg.FFmpegError;
-import com.appunite.ffmpeg.FFmpegListener;
-import com.appunite.ffmpeg.FFmpegPlayer;
-import com.appunite.ffmpeg.FFmpegStreamInfo;
-import com.appunite.ffmpeg.NotPlayingException;
 import com.nuvoton.socketmanager.ReadConfigure;
 import com.nuvoton.socketmanager.SocketManager;
 
+import org.videolan.libvlc.IVLCVout;
+import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.Media;
+import org.videolan.libvlc.MediaPlayer;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class FilePlayActivity extends AppCompatActivity implements FFmpegListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener{
+public class FilePlayActivity extends AppCompatActivity implements View.OnClickListener,
+        SeekBar.OnSeekBarChangeListener, IVLCVout.Callback, MediaPlayer.EventListener, SurfaceHolder.Callback{
     private int mCurrentTimeS, mSeekTimeS;
     private Timer pollingTimer;
     private int counter = 0;
@@ -39,8 +48,12 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
     private String fileURL;
     private static String TAG = "FilePlayActivity";
     private boolean isHide = false;
-    private FFmpegPlayer mMpegPlayer;
+    private LibVLC mLibVLC;
+    private Media mMedia;
     private SurfaceView mVideoView;
+    private MediaPlayer mMediaPlayer;
+    private SurfaceHolder mSurfaceHolder;
+    private int mVideoHeight, mVideoWidth, mVideoVisibleHeight, mVideoVisibleWidth, mSarNum, mSarDen;
     private SeekBar seekBar;
     private ImageButton snapshotButton, playButton, expandButton;
     private SocketManager socketManager;
@@ -48,19 +61,14 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
     private int orientation;
     private String plarform, cameraSerial;
     private ProgressBar progressBar;
-    private int mAudioStreamNo = FFmpegPlayer.UNKNOWN_STREAM;
-    private int mSubtitleStreamNo = FFmpegPlayer.NO_STREAM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_play);
-        mVideoView = (SurfaceView) this.findViewById(R.id.fileVideoView);
-        mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
         configure = ReadConfigure.getInstance(this);
         registerUI();
         determineOrientation();
-        fileURL = getIntent().getStringExtra("FileURL");
         Log.d(TAG, "onCreate: " + fileURL);
         setDataSource();
     }
@@ -68,12 +76,18 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMpegPlayer.stop();
     }
 
 
 
     public void registerUI(){
+        mVideoView = (SurfaceView) this.findViewById(R.id.fileVideoView);
+        mSurfaceHolder = mVideoView.getHolder();
+        mSurfaceHolder.setFormat(PixelFormat.RGBX_8888);
+        mSurfaceHolder.addCallback(this);
+//        fileURL = getIntent().getStringExtra("FileURL");
+        fileURL = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
+
         playButton = (ImageButton) this.findViewById(R.id.filePlayButton);
         playButton.setOnClickListener(this);
         playButton.setEnabled(false);
@@ -89,75 +103,6 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
         progressBar = (ProgressBar) this.findViewById(R.id.fileProgressBar);
     }
 
-    //FFMPEG delegate
-    public void onFFDataSourceLoaded(FFmpegError err, FFmpegStreamInfo[] streams){
-        if (err != null){
-            String format = "Could not open stream";
-            Log.d(TAG, "onFFDataSourceLoaded: " + format);
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        Log.d(TAG, "onFFDataSourceLoaded: loaded");
-        progressBar.setVisibility(View.GONE);
-        seekBar.setEnabled(true);
-        mMpegPlayer.pause();
-        mMpegPlayer.resume();
-    }
-
-    public void onFFResume(NotPlayingException result){
-        isPlaying = true;
-        Log.d(TAG, "onFFResume: ");
-        playButton.setImageResource(R.drawable.pause);
-        expandButton.setEnabled(true);
-        playButton.setEnabled(true);
-        seekBar.setEnabled(true);
-    }
-
-    public void onFFPause(NotPlayingException err){
-        isPlaying = false;
-        Log.d(TAG, "onFFPause: ");
-        playButton.setImageResource(R.drawable.play);
-        expandButton.setEnabled(true);
-        playButton.setEnabled(true);
-    }
-
-    public void onFFStop(){
-        isPlaying = false;
-        Log.d(TAG, "onFFStop: ");
-        playButton.setImageResource(R.drawable.play);
-        playButton.setEnabled(true);
-    }
-
-    public void onFFUpdateTime(long currentTimeUs, long videoDurationUs, boolean isFinished){
-        counter = 0;
-        if (isTracking == false){
-            mCurrentTimeS = (int)(currentTimeUs / 1000000);
-            int videoDurationS = (int)(videoDurationUs / 1000000);
-            seekBar.setMax(videoDurationS);
-            if (isTracked == false){
-                seekBar.setProgress(mCurrentTimeS);
-            }else if (isTracked == true){
-                mCurrentTimeS = mSeekTimeS;
-                seekBar.setProgress(mSeekTimeS);
-                isTracked = false;
-            }
-        }
-        if (isFinished == true){
-            playButton.setImageResource(R.drawable.play);
-            isPlaying = false;
-        }
-        Log.d(TAG, "onFFUpdateTime: " + String.valueOf(currentTimeUs) + "max: " + String.valueOf(videoDurationUs));
-    }
-
-    public void onFFSeeked(NotPlayingException result){
-        isTracked = true;
-        Log.d(TAG, "onFFSeeked: " + String.valueOf(mSeekTimeS));
-        seekBar.setEnabled(false);
-        playButton.setEnabled(false);
-        expandButton.setEnabled(false);
-        seekBar.setProgress(mSeekTimeS);
-        mMpegPlayer.resume();
-    }
-
     //button delegate
     @Override
     public void onClick(View v) {
@@ -169,7 +114,6 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
                     setDataSource();
                 }else {
                     isPlaying = false;
-                    mMpegPlayer.pause();
                 }
                 break;
             case R.id.fileExpandButton:
@@ -195,7 +139,6 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
     }
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        mMpegPlayer.pause();
     }
 
     @Override
@@ -205,7 +148,6 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
         expandButton.setEnabled(false);
         mSeekTimeS = seekBar.getProgress();
         long mSeekTimeUS = mSeekTimeS * 1000000;
-        mMpegPlayer.seek(mSeekTimeUS);
         Log.d(TAG, "onStopTrackingTouch: " + String.valueOf(mSeekTimeUS));
         isTracked = true;
     }
@@ -230,22 +172,143 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
                 progressBar.setVisibility(View.VISIBLE);
             }
         });
+        createPlayer(fileURL);
+    }
 
-        HashMap<String, String> params = new HashMap<String, String>();
-        // set font for ass
-        File assFont = new File(Environment.getExternalStorageDirectory(),
-                "DroidSansFallback.ttf");
-        params.put("ass_default_font_path", assFont.getAbsolutePath());
-        params.put("fflags", "nobuffer");
-        params.put("probesize", "5120");
-        params.put("flush_packets", "1");
-        mMpegPlayer.setMpegListener(this);
+    private void createPlayer(String media){
+        releasePlayer();
+        try {
+            ArrayList<String> options = new ArrayList<>();
+            options.add("-vvv");
+            options.add("--rtsp-tcp");
+            mLibVLC = new LibVLC(options);
+            mSurfaceHolder = mVideoView.getHolder();
+            mSurfaceHolder.setKeepScreenOn(true);
 
-//                mMpegPlayer.setDataSource("rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov", params, FFmpegPlayer.UNKNOWN_STREAM, mAudioStreamNo,
-//                mSubtitleStreamNo);
+            mMediaPlayer = new MediaPlayer(mLibVLC);
+            mMediaPlayer.setEventListener(this);
 
-        mMpegPlayer.setDataSource(fileURL, params, FFmpegPlayer.UNKNOWN_STREAM, mAudioStreamNo,
-                mSubtitleStreamNo);
+            final IVLCVout vout = mMediaPlayer.getVLCVout();
+            vout.setVideoView(mVideoView);
+            vout.addCallback(this);
+            vout.attachViews();
+
+            mMedia = new Media(mLibVLC, Uri.parse(media));
+            mMediaPlayer.setMedia(mMedia);
+            mMediaPlayer.getTime();
+            mMediaPlayer.play();
+        }catch (Exception e){
+            Toast.makeText(this, "Error creating player!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void releasePlayer(){
+        if (mLibVLC == null){
+            return;
+        }
+        mMediaPlayer.stop();
+        final IVLCVout vout = mMediaPlayer.getVLCVout();
+        vout.removeCallback(this);
+        vout.detachViews();
+        mSurfaceHolder = null;
+        mLibVLC.release();
+        mLibVLC = null;
+        mVideoHeight = 0;
+        mVideoWidth = 0;
+    }
+
+    @Override
+    public void onNewLayout(IVLCVout vlcVout, int width, int height, int visibleWidth, int visibleHeight, int sarNum, int sarDen) {
+        if (width*height == 0) return;
+
+        mVideoWidth = width;
+        mVideoHeight = height;
+        setSize(mVideoWidth, mVideoHeight);
+    }
+
+    @Override
+    public void onSurfacesCreated(IVLCVout vlcVout) {
+
+    }
+
+    @Override
+    public void onSurfacesDestroyed(IVLCVout vlcVout) {
+
+    }
+
+    @Override
+    public void onHardwareAccelerationError(IVLCVout vlcVout) {
+
+    }
+
+    @Override
+    public void onEvent(MediaPlayer.Event event) {
+        Log.d(TAG, "onEvent: " + String.valueOf(event.type));
+        switch (event.type){
+            case MediaPlayer.Event.EndReached:
+                break;
+            case MediaPlayer.Event.Playing:
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                break;
+            case MediaPlayer.Event.Paused:
+                break;
+            case MediaPlayer.Event.Stopped:
+                break;
+            case MediaPlayer.Event.PositionChanged:
+                break;
+            case MediaPlayer.Event.TimeChanged:
+                break;
+        }
+    }
+
+    private void setSize(int width, int height){
+        mVideoHeight = height;
+        mVideoWidth = width;
+        if (mVideoWidth * mVideoHeight <= -1) return;
+        if (mSurfaceHolder == null || mVideoView == null) return;
+
+        int w = getWindow().getDecorView().getWidth();
+        int h = getWindow().getDecorView().getHeight();
+
+        boolean isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        if (w>h && isPortrait || w<h && !isPortrait){
+            int i=w;
+            w=h;
+            h=i;
+        }
+
+        float videoAR = (float) mVideoWidth / (float) mVideoHeight;
+        float screenAR = (float) w / (float) h;
+
+        if (screenAR < videoAR){
+            h = (int) (w/videoAR);
+        }else{
+            w = (int) (h*videoAR);
+        }
+        mSurfaceHolder.setFixedSize(mVideoWidth, mVideoHeight);
+
+        ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
+        lp.width = w;
+        lp.height = h;
+        mVideoView.setLayoutParams(lp);
+        mVideoView.invalidate();
+
+
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
     }
 
     private class TimerPollingCheck extends TimerTask {
@@ -274,14 +337,7 @@ public class FilePlayActivity extends AppCompatActivity implements FFmpegListene
     public void onConfigurationChanged(Configuration newConfig) {
         Log.d(TAG, "onConfigurationChanged: live fragment");
         super.onConfigurationChanged(newConfig);
-        switch (newConfig.orientation){
-            case Configuration.ORIENTATION_LANDSCAPE:
-//                mVideoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                break;
-            case Configuration.ORIENTATION_PORTRAIT:
-//                mVideoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 240));
-                break;
-        }
+        setSize(mVideoWidth, mVideoHeight);
     }
 
 }

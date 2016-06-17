@@ -97,7 +97,7 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
             if (width/height > ratio){
                 height = (width / ratio) - 100;
             }else{
-                height = (width / ratio);
+                height = (width / ratio) + 40;
             }
 			heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)height, MeasureSpec.EXACTLY);
 		}

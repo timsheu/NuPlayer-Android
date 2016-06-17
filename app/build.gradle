@@ -19,6 +19,8 @@ android {
     }
 }
 repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
     mavenCentral()
 }
 dependencies {
@@ -31,5 +33,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'info.hoang8f:android-segmented:1.0.6'
     compile 'com.android.support:percent:23.4.0'
+    compile "de.mrmaffen:vlc-android-sdk:1.9.8"
 }
 
