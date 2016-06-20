@@ -3,26 +3,17 @@ package com.nuvoton.nuplayer;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
-import android.graphics.SurfaceTexture;
 import android.net.Uri;
-import android.os.Environment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nuvoton.socketmanager.ReadConfigure;
@@ -33,18 +24,16 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class FilePlayActivity extends AppCompatActivity implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener, IVLCVout.Callback, MediaPlayer.EventListener, SurfaceHolder.Callback{
-    private int mCurrentTimeS, mSeekTimeS;
+    private int seekTime, totalTime, currentTime;
     private Timer pollingTimer;
     private int counter = 0;
-    private boolean isPlaying = false, isTracking = false, isTracked = false;
+    private boolean isPlaying = false, isTracked = false, isEnded = false;
     private String fileURL;
     private static String TAG = "FilePlayActivity";
     private boolean isHide = false;
@@ -85,8 +74,8 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
         mSurfaceHolder = mVideoView.getHolder();
         mSurfaceHolder.setFormat(PixelFormat.RGBX_8888);
         mSurfaceHolder.addCallback(this);
-//        fileURL = getIntent().getStringExtra("FileURL");
-        fileURL = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
+        fileURL = getIntent().getStringExtra("FileURL");
+//        fileURL = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
 
         playButton = (ImageButton) this.findViewById(R.id.filePlayButton);
         playButton.setOnClickListener(this);
@@ -110,10 +99,12 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
             case R.id.filePlayButton:
                 Log.d(TAG, "onClick: play");
                 playButton.setEnabled(false);
-                if (isPlaying == false){
+                if (mMediaPlayer.isPlaying() == false){
+                    isPlaying = mMediaPlayer.isPlaying();
                     setDataSource();
                 }else {
                     isPlaying = false;
+                    mMediaPlayer.pause();
                 }
                 break;
             case R.id.fileExpandButton:
@@ -139,6 +130,10 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
     }
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
+        playButton.setEnabled(false);
+        expandButton.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+        mMediaPlayer.pause();
     }
 
     @Override
@@ -146,10 +141,14 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
         this.seekBar.setEnabled(false);
         playButton.setEnabled(false);
         expandButton.setEnabled(false);
-        mSeekTimeS = seekBar.getProgress();
-        long mSeekTimeUS = mSeekTimeS * 1000000;
-        Log.d(TAG, "onStopTrackingTouch: " + String.valueOf(mSeekTimeUS));
         isTracked = true;
+        seekTime = seekBar.getProgress() * 1000;
+        mMediaPlayer.setTime((long)seekTime);
+        if (isEnded == true){
+            setDataSource();
+        }else {
+            mMediaPlayer.play();
+        }
     }
 
     public void determineOrientation(){
@@ -195,8 +194,8 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
 
             mMedia = new Media(mLibVLC, Uri.parse(media));
             mMediaPlayer.setMedia(mMedia);
-            mMediaPlayer.getTime();
             mMediaPlayer.play();
+
         }catch (Exception e){
             Toast.makeText(this, "Error creating player!", Toast.LENGTH_LONG).show();
         }
@@ -246,17 +245,42 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
         Log.d(TAG, "onEvent: " + String.valueOf(event.type));
         switch (event.type){
             case MediaPlayer.Event.EndReached:
+                Log.d(TAG, "onEvent: end reached");
+                playButton.setImageResource(R.drawable.play);
+                isEnded = true;
                 break;
             case MediaPlayer.Event.Playing:
+                isEnded = false;
+                if (mMediaPlayer.isSeekable() == false){
+                    seekBar.setEnabled(false);
+                }
+                playButton.setEnabled(true);
+                expandButton.setEnabled(true);
+                seekBar.setEnabled(true);
                 progressBar.setVisibility(ProgressBar.INVISIBLE);
+                totalTime = (int)mMediaPlayer.getLength() / 1000;
+                seekBar.setMax(totalTime);
+                playButton.setImageResource(R.drawable.pause);
                 break;
             case MediaPlayer.Event.Paused:
+                playButton.setImageResource(R.drawable.play);
+                Log.d(TAG, "onEvent: paused");
                 break;
             case MediaPlayer.Event.Stopped:
-                break;
-            case MediaPlayer.Event.PositionChanged:
+                playButton.setImageResource(R.drawable.play);
+                Log.d(TAG, "onEvent: stopped");
                 break;
             case MediaPlayer.Event.TimeChanged:
+                Log.d(TAG, "onEvent: time changed " + String.valueOf(mMediaPlayer.getTime()));
+                currentTime = (int) mMediaPlayer.getTime() / 1000;
+                seekBar.setProgress(currentTime);
+                if (isTracked){
+                    mMediaPlayer.setTime((long)seekTime);
+                    Log.d(TAG, "onEvent: tracked");
+                    isTracked = false;
+                }
+                break;
+            default:
                 break;
         }
     }
