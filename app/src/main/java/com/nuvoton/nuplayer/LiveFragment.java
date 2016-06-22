@@ -201,7 +201,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             }
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
-        configure = ReadConfigure.getInstance(getActivity());
+        configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
     }
 
     @Override

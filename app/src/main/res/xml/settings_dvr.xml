@@ -47,7 +47,7 @@
 
     <PreferenceCategory android:layout="@layout/p_category_audio_layout_dvr">
         <SwitchPreference
-            android:key="Dvr Device Mic"
+            android:key="Device Mic"
             android:title="Device Mic"
             android:summaryOn="Device microphone is on."
             android:summaryOff="Device microphone is off."

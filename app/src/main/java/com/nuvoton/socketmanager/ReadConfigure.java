@@ -47,7 +47,7 @@ public class ReadConfigure {
         Log.d(TAG, "getInstance: ");
         contextLocal = context;
         for (int i=0; i<5; i++){
-            initSharedPreference(i, false);
+            initSharedPreference(i, true);
         }
         new Thread(new Runnable() {
             @Override
@@ -98,8 +98,6 @@ public class ReadConfigure {
         Log.d(TAG, "ExamineLocalFile: " );
         try{
             InputStream inputStream = contextLocal.getAssets().open(audioCommand);
-
-
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -164,18 +162,21 @@ public class ReadConfigure {
         if (clear == true){
             editor.clear();
         }
-        editor.putBoolean("Adaptive", false);
-        editor.putBoolean("Fixed Quality", false);
-        editor.putBoolean("Fixed Bit Rate", false);
-        editor.putString("Transmission", "UDP");
-        editor.putBoolean("Mute", false);
-        editor.putBoolean("Available Storage", true);
-        editor.putBoolean("Recorder Status", false);
-        editor.putInt("Serial", cameraSerial);
-        editor.putInt("Resolution", 1);
-        editor.putInt("Encode Quality", 1);
-        editor.putInt("Bit Rate", 6000);
-        editor.putInt("FPS", 30);
+        editor.putString("Adaptive", "0");
+        editor.putString("Fixed Quality", "0");
+        editor.putString("Fixed Bit Rate", "0");
+        editor.putBoolean("Transmission", false);
+        editor.putString("Mute", "No");
+        editor.putString("Available Storage", "No");
+        editor.putBoolean("Recorder Status", true);
+        editor.putString("Serial", String.valueOf(cameraSerial));
+        editor.putString("Resolution", "0");
+        editor.putString("Encode Quality", "0");
+        editor.putString("Bit Rate", "6000");
+        editor.putString("FPS", "30");
+        editor.putBoolean("Device Mic", true);
+        editor.putString("SSID", "SkyEye");
+        editor.putString("Password", "12345678");
         Set<String> set = new LinkedHashSet<String>();
         if (cameraSerial == 0 || cameraSerial == 1){ // DVR and local IP
             editor.putString("Name", "LOCAL-IP");

@@ -38,7 +38,7 @@
 
             />
         <ListPreference
-            android:key="Fixed BitRate"
+            android:key="Fixed Bit Rate"
             android:title="Fixed Bit Rate"
             android:summary="%s"
             android:entries="@array/fixed_bitrate_list"

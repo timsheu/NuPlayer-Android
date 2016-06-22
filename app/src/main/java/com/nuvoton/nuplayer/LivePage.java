@@ -138,7 +138,7 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
                             .replace(R.id.fragment_content, fragment)
                             .commit();
                 }else{
-                    SettingFragment fragment = SettingFragment.newInstance(platform);
+                    SettingFragment fragment = SettingFragment.newInstance(bundle);
                     fragment.setArguments(bundle);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fragment_content, fragment)

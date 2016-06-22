@@ -62,7 +62,7 @@ public class FileFragment extends Fragment implements SocketInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_file_list, container, false);
-        configure = ReadConfigure.getInstance(getActivity());
+        configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
         platform = getArguments().getString("Platform");
         cameraSerial = getArguments().getString("CameraSerial");
         socketManager = new SocketManager();
