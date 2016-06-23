@@ -1,7 +1,9 @@
 package com.nuvoton.socketmanager;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nuvoton.nuplayer.FileContent;
 
@@ -24,6 +26,7 @@ import java.util.Timer;
  * Created by timsheu on 6/3/16.
  */
 public class SocketManager {
+    private ArrayList<String> commandList;
     private SocketInterface socketInterface = null;
     private URL url;
     private static final String TAG = "SocketManager";
@@ -32,8 +35,17 @@ public class SocketManager {
     public static final String CMDCHECKSD="2";
     public static final String CMDSDCAP="3";
     public static final String CMDRSTOP="4";
-    public static final String CMDFILELIST="5";
-    public static final String CMDCHECKSTORAGE="6";
+    public static final String CMD_FILELIST="5";
+    public static final String CMDCHECK_STORAGE="6";
+    public static final String CMDSET_RESOLUTION="7";
+    public static final String CMDSET_ADAPTIVE="8";
+    public static final String CMDSET_FIXED_BITRATE="9";
+    public static final String CMDSET_FIXED_QUALITY="10";
+    public static final String CMDSET_FPS="11";
+    public static final String CMDSET_MUTE="12";
+    public static final String CMDSET_REBOOT="13";
+    public static final String CMDSET_PLUGIN="14";
+
 
     Timer timer = new Timer();
 
@@ -122,7 +134,7 @@ public class SocketManager {
                 }else if (httpcmd.equals(CMDRSTART)) {
                     jsonObject = new JSONObject(result);
                     if (jsonObject.getString("value").equals("0")) {
-                        //Toast.makeText(getBaseContext(), "start record success", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getBaseContext(), "start record success", Toast.LENGTH_SHORT).show();
                     } else {
                     }
                 }else if(httpcmd.equals(CMDRSTOP)){
@@ -144,7 +156,7 @@ public class SocketManager {
                     int available=Integer.parseInt(jsonObject.getString("available"));
                     float avilable1=(((float)available)/(1024*1024));
                     Log.d(TAG, String.valueOf(avilable1));
-                }else if (httpcmd.equals(CMDFILELIST)) {
+                }else if (httpcmd.equals(CMD_FILELIST)) {
                     String [] fileList = result.split("\n");
                     ArrayList<FileContent> fileContentList = new ArrayList<>();
                     int i = 0;
@@ -164,10 +176,31 @@ public class SocketManager {
                         }
                     }
                     socketInterface.updateFileList(fileContentList);
-                }else if (httpcmd.equals(CMDCHECKSTORAGE)){
+                }else if (httpcmd.equals(CMDCHECK_STORAGE)){
                     if(result != null) {
                         socketInterface.deviceIsAlive();
                     }
+                }else if (httpcmd.equals(CMDSET_RESOLUTION)){
+                    Log.d(TAG,"set resolution");
+                }else if (httpcmd.equals(CMDSET_ADAPTIVE)){
+                    Log.d(TAG,"set adaptive");
+                    commandList.remove(0);
+                    if (commandList.size() > 0){
+                        executeSendGetTaskList(commandList, CMDSET_ADAPTIVE);
+                    }
+                }else if (httpcmd.equals(CMDSET_FIXED_BITRATE)){
+                    Log.d(TAG,"set fixed bitrate");
+                }else if (httpcmd.equals(CMDSET_FIXED_QUALITY)){
+                    Log.d(TAG,"set fixed quality");
+                }else if (httpcmd.equals(CMDSET_FPS)){
+                    Log.d(TAG,"set fps");
+                }else if (httpcmd.equals(CMDSET_MUTE)){
+                    Log.d(TAG,"set mute");
+                }else if (httpcmd.equals(CMDSET_REBOOT)){
+                    Log.d(TAG,"reboot");
+                    socketInterface.showToastMessage("The device is rebooted, please connect it in Wi-Fi setting page!");
+                }else if (httpcmd.equals(CMDSET_PLUGIN)){
+                    Log.d(TAG,"send plugin");
                 }else{
                     Log.d(TAG,"other cmd");
                 }
@@ -185,5 +218,14 @@ public class SocketManager {
 
     public void executeSendGetTask(String command, String commandType){
         new SendGetTask().execute(command, commandType);
+    }
+
+    public void executeSendGetTaskList(ArrayList<String> list, String commandType){
+        new SendGetTask().execute(list.get(0), commandType);
+    }
+
+    public void setCommandList(ArrayList<String> list){
+        Log.d(TAG, "setCommandList: " + list.toString());
+        commandList = list;
     }
 }

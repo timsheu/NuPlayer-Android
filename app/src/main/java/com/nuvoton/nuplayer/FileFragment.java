@@ -131,7 +131,7 @@ public class FileFragment extends Fragment implements SocketInterface{
         group = (sString) targetCommand.get("group");
         command = command + baseCommand.getValue() + "?action=" + action.getValue() + "&group=" + group.getValue();
         if (socketManager != null){
-            socketManager.executeSendGetTask(command, SocketManager.CMDFILELIST);
+            socketManager.executeSendGetTask(command, SocketManager.CMD_FILELIST);
         }
     }
 

@@ -2,6 +2,7 @@ package com.nuvoton.nuplayer;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -14,16 +15,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.widget.Toast;
 
+import com.longevitysoft.android.xml.plist.domain.PListObject;
+import com.longevitysoft.android.xml.plist.domain.sString;
 import com.nuvoton.socketmanager.ReadConfigure;
+import com.nuvoton.socketmanager.SocketInterface;
+import com.nuvoton.socketmanager.SocketManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, SocketInterface{
+    private ReadConfigure configure;
+    private SocketManager socketManager;
     private String key; 
     private static String platform, cameraSerial, preferenceName;
     private String TAG = "SettingFragment";
@@ -54,6 +63,8 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         } else if (platform.equals("DVR")) {
             addPreferencesFromResource(R.xml.settings_dvr);
         }
+
+        configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,7 +84,6 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         super.onResume();
         Log.d(TAG, "onResume: ");
         getActivity().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
-//        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -81,35 +91,229 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         super.onPause();
         Log.d(TAG, "onPause: ");
         getActivity().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
-//        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void determineSettings(String key, SharedPreferences sharedPreference){
+        socketManager = new SocketManager();
+        boolean callSend = true, plugin = false;
+        String command = getDeviceURL();
+        sString baseCommand, subCommand;
+        String pipe="&pipe=0", type="&type=h264", value, commandType = "";
+        ArrayList<String> commandList = new ArrayList<>();
+        String pluginCommand = "param.cgi?action=update&group=plugin";
+        String finalCommand = "";
+        String index = "0";
         switch (key){
             case "Resolution":
-//                if (valueOfKey.equals("")){
-//
-//                }
+                ArrayList<Map> videoCommandSet = configure.videoCommandSet;
+                Map<String, PListObject> targetCommand = videoCommandSet.get(1);
+                baseCommand = (sString) targetCommand.get("Base Command");
+                subCommand = (sString) targetCommand.get("Sub Command");
+                value = sharedPreference.getString(key, "0");
+                command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
+                commandType = SocketManager.CMDSET_RESOLUTION;
                 break;
             case "Adaptive":
+                index = sharedPreference.getString("Adaptive", "0");
+                commandList = new ArrayList<>();
+
+                String adaptiveTemp = "Pipe0_Quality";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=0";
+                commandList.add(finalCommand);
+
+                adaptiveTemp = "Pipe0_Min_Quality";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=20";
+                commandList.add(finalCommand);
+
+                adaptiveTemp = "Pipe0_Max_Quality";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=52";
+                commandList.add(finalCommand);
+
+                if (index.equals("0")){
+                    adaptiveTemp = "Pipe0_Min_Bitrate";
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=512";
+                    commandList.add(finalCommand);
+
+                    adaptiveTemp = "Pipe0_Max_Bitrate";
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=2000";
+                    commandList.add(finalCommand);
+                }else if (index.equals("1")){
+                    adaptiveTemp = "Pipe0_Min_Bitrate";
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=512";
+                    commandList.add(finalCommand);
+
+                    adaptiveTemp = "Pipe0_Max_Bitrate";
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=5000";
+                    commandList.add(finalCommand);
+                }else{
+                    adaptiveTemp = "Pipe0_Min_Bitrate";
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=2000";
+                    commandList.add(finalCommand);
+
+                    adaptiveTemp = "Pipe0_Max_Bitrate";
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=5000";
+                    commandList.add(finalCommand);
+                }
+                plugin = true;
+                socketManager.setCommandList(commandList);
+                commandType = SocketManager.CMDSET_ADAPTIVE;
+                sharedPreference.edit().putString("Fixed Quality", "4");
+                sharedPreference.edit().putString("Fixed Bit Rate", "4");
                 break;
             case "Fixed Bit Rate":
+                index = sharedPreference.getString("Fixed Bit Rate", "0");
+                commandList = new ArrayList<>();
+
+                String fixedBitRateTemp = "Pipe0_Quality";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=0";
+                commandList.add(finalCommand);
+
+                fixedBitRateTemp = "Pipe0_Min_Quality";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=1";
+                commandList.add(finalCommand);
+
+                fixedBitRateTemp = "Pipe0_Max_Quality";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=52";
+                commandList.add(finalCommand);
+
+                fixedBitRateTemp = "Pipe0_Max_Bitrate";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=0";
+                commandList.add(finalCommand);
+
+                fixedBitRateTemp = "Pipe0_Bitrate";
+
+                if (index.equals("0")){
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=2000";
+                }else if (index.equals("1")){
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=3000";
+                }else {
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=5000";
+                }
+                plugin = true;
+                commandList.add(finalCommand);
+                socketManager.setCommandList(commandList);
+                commandType = SocketManager.CMDSET_FIXED_BITRATE;
+                sharedPreference.edit().putString("Adaptive", "4");
+                sharedPreference.edit().putString("Fixed Quality", "4");
+
                 break;
             case "Fixed Quality":
+                index = sharedPreference.getString("Fixed Bit Rate", "0");
+                commandList = new ArrayList<>();
+
+                String fixedQualityTemp = "Pipe0_Min_Bitrate";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=512";
+                commandList.add(finalCommand);
+
+                fixedQualityTemp = "Pipe0_Max_Bitrate";
+                finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=4096";
+                commandList.add(finalCommand);
+
+                fixedQualityTemp = "Pipe0_Quality";
+
+                if (index.equals("0")){
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=50";
+                }else if (index.equals("1")){
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=40";
+                }else {
+                    finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=25";
+                }
+                plugin = true;
+                commandList.add(finalCommand);
+                socketManager.setCommandList(commandList);
+                commandType = SocketManager.CMDSET_FIXED_QUALITY;
+                sharedPreference.edit().putString("Adaptive", "4");
+                sharedPreference.edit().putString("Fixed Bit Rate", "4");
                 break;
             case "FPS":
+                videoCommandSet = configure.videoCommandSet;
+                targetCommand = videoCommandSet.get(7);
+                baseCommand = (sString) targetCommand.get("Base Command");
+                subCommand = (sString) targetCommand.get("Sub Command");
+                value = sharedPreference.getString(key, "30");
+                command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
+                commandType = SocketManager.CMDSET_FPS;
                 break;
             case "Device Mic":
+                videoCommandSet = configure.audioCommandSet;
+                targetCommand = videoCommandSet.get(0);
+                baseCommand = (sString) targetCommand.get("Base Command");
+                subCommand = (sString) targetCommand.get("Sub Command");
+                boolean mute = sharedPreference.getBoolean("key", false);
+                value = (mute == true) ? "1" : "0";
+                command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
+                commandType = SocketManager.CMDSET_MUTE;
+
                 break;
             case "Transmission":
+                callSend = false;
                 break;
             case "Reboot":
+                String reboot = sharedPreference.getString(key, "1");
+                if (reboot.equals("0")){
+                    videoCommandSet = configure.systemCommandSet;
+                    targetCommand = videoCommandSet.get(0);
+                    baseCommand = (sString) targetCommand.get("Base Command");
+                    command = command + baseCommand.getValue();
+                    commandType = SocketManager.CMDSET_REBOOT;
+                }
+                sharedPreference.edit().putString(key, "1");
                 break;
-            case "Reset Data":
-                break;
+//            case "Reset Data":
+//                callSend = false;
+//                String reset = sharedPreference.getString(key, "1");
+//                if (reset.equals("0")){
+//                    configure.initSharedPreference(Integer.valueOf(cameraSerial), true);
+//                    sharedPreference.edit().putString(key, "0");
+//                }
+//                break;
             case "Wi-Fi QR Code":
+                Log.d(TAG, "determineSettings: Wi-Fi QR Code");
+                String QRCode, SSID = sharedPreference.getString("SSID", "SkyEye"), Password = sharedPreference.getString("Password", "12345678");
+                QRCode = "BOOTPROTO DHCP\nIPADDR 192.168.3.1\nGATEWAY 192.168.3.1\nSSID \"NT_ZY\"\nAUTH_MODE WPA2PSK\nENCRYPT_TYPE AES\nAUTH_KEY 12345678\nWPS_TRIG_KEY HOME\n\nAP_IPADDR 192.168.100.1\nAP_SSID \"" +
+                SSID + "\"\nAP_AUTH_MODE WPA2PSK\nAP_ENCRYPT_TYPE AES\nAP_AUTH_KEY " + Password + "\nAP_CHANNEL AUTO\n\nBRIF";
+                callSend = false;
+                Intent intent = new Intent(getActivity(), QRCode.class);
+                intent.putExtra("QR code", QRCode);
+                startActivity(intent);
                 break;
         }
+        Log.d(TAG, "determineSettings: " + command);
+        if (socketManager != null && callSend == true && plugin == false){
+            socketManager.executeSendGetTask(command, commandType);
+        }else if (socketManager != null && callSend == true && plugin == true){
+            socketManager.executeSendGetTaskList(commandList, commandType);
+        }
+        sharedPreference.edit().commit();
     }
 
+    private String getDeviceURL(){
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        String urlString = preference.getString("URL", "DEFAULT");
+        String [] ipCut = urlString.split("/");
+        String ip = ipCut[2];
+        String url = "http://" + ip + ":80/";
+        return url;
+    }
+
+    private void checkStatus(){
+
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        Log.d(TAG, "showToastMessage: ");
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void updateFileList(ArrayList<FileContent> fileList) {
+        Log.d(TAG, "updateFileList: ");
+    }
+
+    @Override
+    public void deviceIsAlive() {
+        Log.d(TAG, "deviceIsAlive: ");
+    }
 }

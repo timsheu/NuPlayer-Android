@@ -82,31 +82,32 @@
             android:summary="Click to reboot device."
             android:entryValues="@array/reboot_device_value_list"
             android:entries="@array/reboot_device_list"
+            android:defaultValue="1"
             />
-        <ListPreference
-            android:key="Reset Data"
-            android:title="Reset Data"
-            android:summary="Click to reset data."
-            android:entryValues="@array/reset_data_value_list"
-            android:entries="@array/reset_data_list"
-            />
+        <!--<ListPreference-->
+            <!--android:key="Reset Data"-->
+            <!--android:title="Reset Data"-->
+            <!--android:summary="Click to reset data."-->
+            <!--android:entryValues="@array/reset_data_value_list"-->
+            <!--android:entries="@array/reset_data_list"-->
+            <!--/>-->
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:key="Wi-Fi Setting"
-        android:title="@string/wifi_category_title"
-        android:layout="@layout/p_category_wifi_layout">
+    <!--<PreferenceCategory-->
+        <!--android:key="Wi-Fi Setting"-->
+        <!--android:title="@string/wifi_category_title"-->
+        <!--android:layout="@layout/p_category_wifi_layout">-->
 
-        <ListPreference
-            android:key="Wi-Fi QR Code"
-            android:title="Wi-Fi QR Code"
-            android:summary="Click to show Wi-Fi QR Code."
-            android:entryValues="@array/show_qr_code_value_list"
-            android:entries="@array/show_qr_code_list"
-            />
+        <!--<ListPreference-->
+            <!--android:key="Wi-Fi QR Code"-->
+            <!--android:title="Wi-Fi QR Code"-->
+            <!--android:summary="Click to show Wi-Fi QR Code."-->
+            <!--android:entryValues="@array/show_qr_code_value_list"-->
+            <!--android:entries="@array/show_qr_code_list"-->
+            <!--/>-->
 
 
-    </PreferenceCategory>
+    <!--</PreferenceCategory>-->
 
 </PreferenceScreen>

@@ -477,7 +477,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         action = (sString) targetCommand.get("Sub Command");
         command = command + baseCommand.getValue() + "?" + action.getValue();
         if (socketManager != null){
-            socketManager.executeSendGetTask(command, SocketManager.CMDCHECKSTORAGE);
+            socketManager.executeSendGetTask(command, SocketManager.CMDCHECK_STORAGE);
         }
     }
 

@@ -75,6 +75,7 @@
             android:summary="Click to generate Wi-Fi QR Code."
             android:entryValues="@array/show_qr_code_value_list"
             android:entries="@array/show_qr_code_list"
+            android:defaultValue="1"
             />
 
     </PreferenceCategory>
@@ -98,13 +99,13 @@
             android:entryValues="@array/reboot_device_value_list"
             android:entries="@array/reboot_device_list"
             />
-        <ListPreference
-            android:key="Reset Data"
-            android:title="Reset Data"
-            android:summary="Click to reset data."
-            android:entryValues="@array/reset_data_value_list"
-            android:entries="@array/reset_data_list"
-            />
+        <!--<ListPreference-->
+            <!--android:key="Reset Data"-->
+            <!--android:title="Reset Data"-->
+            <!--android:summary="Click to reset data."-->
+            <!--android:entryValues="@array/reset_data_value_list"-->
+            <!--android:entries="@array/reset_data_list"-->
+            <!--/>-->
 
     </PreferenceCategory>
 

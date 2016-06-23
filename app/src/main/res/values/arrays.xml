@@ -26,24 +26,28 @@
         <item>Low</item>
         <item>Variable</item>
         <item>High</item>
+        <item>Off</item>
     </string-array>
 
     <string-array name="adaptive_value_list">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="fixed_bitrate_list">
         <item>Low</item>
         <item>Medium</item>
         <item>High</item>
+        <item>Off</item>
     </string-array>
 
     <string-array name="fixed_bitrate_value_list">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
 
 
@@ -51,12 +55,14 @@
         <item>Low</item>
         <item>Medium</item>
         <item>High</item>
+        <item>Off</item>
     </string-array>
 
     <string-array name="fixed_quality_value_list">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="fps_list">
