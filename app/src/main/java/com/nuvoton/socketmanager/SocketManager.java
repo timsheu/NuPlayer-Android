@@ -45,6 +45,8 @@ public class SocketManager {
     public static final String CMDSET_MUTE="12";
     public static final String CMDSET_REBOOT="13";
     public static final String CMDSET_PLUGIN="14";
+    public static final String CMDGET_ALL="15";
+    public static final String CMDSET_RECORD="16";
 
 
     Timer timer = new Timer();
@@ -201,8 +203,37 @@ public class SocketManager {
                     socketInterface.showToastMessage("The device is rebooted, please connect it in Wi-Fi setting page!");
                 }else if (httpcmd.equals(CMDSET_PLUGIN)){
                     Log.d(TAG,"send plugin");
-                }else{
-                    Log.d(TAG,"other cmd");
+                }else if (httpcmd.equals(CMDGET_ALL)){
+                    jsonObject = new JSONObject(result);
+                    String value = jsonObject.getString("value");
+                    switch (commandList.size()){
+                        case 0:
+                            return;
+                        case 1:
+                            socketInterface.updateSettingContent("Recorder Status", value);
+                            break;
+                        case 2:
+                            socketInterface.updateSettingContent("Available Storage", value);
+                            break;
+                        case 3:
+                            socketInterface.updateSettingContent("FPS", value);
+                            break;
+                        case 4:
+                            socketInterface.updateSettingContent("Resolution", value);
+                            break;
+                    }
+                    commandList.remove(0);
+                    if (commandList.size() >0){
+                        executeSendGetTaskList(commandList, CMDGET_ALL);
+                    }
+                    Log.d(TAG,"get all");
+                }else if(httpcmd.equals(CMDSET_RECORD)){
+                    jsonObject = new JSONObject(result);
+                    String value = jsonObject.getString("value");
+                    Log.d(TAG,"set recorder");
+                    if (value.equals("0")){
+                        socketInterface.updateSettingContent("Recorder Status", value);
+                    }
                 }
 
                 // }

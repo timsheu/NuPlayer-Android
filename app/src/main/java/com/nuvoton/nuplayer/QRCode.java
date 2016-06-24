@@ -30,12 +30,12 @@ public class QRCode extends AppCompatActivity {
 //            w = h;
 //        }
         string = getIntent().getStringExtra("QR code");
-        Log.d(TAG, "onCreate: " + string);
+        Log.d(TAG, "onCreate: " + string + " " + String.valueOf(w) + " " + String.valueOf(h));
         qrcode = (ImageView) findViewById(R.id.qrcode);
         Bitmap bitmap = null;
 
         try{
-            bitmap = encodeAsBitmap(string, BarcodeFormat.QR_CODE, w, h);
+            bitmap = encodeAsBitmap(string, BarcodeFormat.QR_CODE, 600, 600);
             qrcode.setImageBitmap(bitmap);
         }catch (WriterException e){
             e.printStackTrace();

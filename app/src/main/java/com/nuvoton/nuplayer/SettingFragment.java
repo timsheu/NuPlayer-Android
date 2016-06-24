@@ -9,7 +9,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.EditTextPreference;
-import android.support.v7.preference.Preference;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,18 +83,21 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: ");
-        getActivity().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
+        getActivity().getApplicationContext().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
+        updateSetting();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
-        getActivity().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
+        getActivity().getApplicationContext().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void determineSettings(String key, SharedPreferences sharedPreference){
         socketManager = new SocketManager();
+        socketManager.setSocketInterface(this);
         boolean callSend = true, plugin = false;
         String command = getDeviceURL();
         sString baseCommand, subCommand;
@@ -277,6 +280,20 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 intent.putExtra("QR code", QRCode);
                 startActivity(intent);
                 break;
+            case "Recorder Status":
+                ArrayList<Map> recordCommandSet = configure.recordCommandSet;
+                String recorderStatus = sharedPreference.getString(key, "0");
+                if (recorderStatus.equals("0")){
+                    targetCommand = recordCommandSet.get(3);
+                }else {
+                    targetCommand = recordCommandSet.get(2);
+                }
+                baseCommand = (sString) targetCommand.get("Base Command");
+                subCommand = (sString) targetCommand.get("Sub Command");
+                value = sharedPreference.getString(key, "30");
+                command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
+                commandType = SocketManager.CMDSET_RECORD;
+                break;
         }
         Log.d(TAG, "determineSettings: " + command);
         if (socketManager != null && callSend == true && plugin == false){
@@ -289,16 +306,12 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
 
     private String getDeviceURL(){
         String cameraName = "Setup Camera " + cameraSerial;
-        SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        SharedPreferences preference = getActivity().getApplicationContext().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
         String urlString = preference.getString("URL", "DEFAULT");
         String [] ipCut = urlString.split("/");
         String ip = ipCut[2];
         String url = "http://" + ip + ":80/";
         return url;
-    }
-
-    private void checkStatus(){
-
     }
 
     @Override
@@ -315,5 +328,76 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     @Override
     public void deviceIsAlive() {
         Log.d(TAG, "deviceIsAlive: ");
+    }
+
+    @Override
+    public void updateSettingContent(String category, String value) {
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getApplicationContext().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        preference.edit().putString(category, value);
+        preference.edit().commit();
+        if (category.equals("Recorder Status")){
+            Preference pref = (Preference)getPreferenceManager().findPreference(category);
+            if (value.equals("1"))
+                pref.setSummary("Recorder is recording");
+            else
+                pref.setSummary("Recorder is stopped");
+        }else if(category.equals("Available Storage")){
+            Preference pref = (Preference)getPreferenceManager().findPreference(category);
+            if (value.equals("1"))
+                pref.setSummary("Storage available on device.");
+            else
+                pref.setSummary("No storage available on device.");
+        }else {
+            ListPreference pref = (ListPreference) getPreferenceManager().findPreference(category);
+            pref.setValue(value);
+        }
+    }
+
+    private void updateSetting(){
+        socketManager = new SocketManager();
+        socketManager.setSocketInterface(this);
+        boolean callSend = true, plugin = false;
+        sString baseCommand, subCommand;
+        String pipe="&pipe=0", type="&type=h264", commandType = "";
+        ArrayList<String> commandList = new ArrayList<>();
+        String command = getDeviceURL();
+// get resolution
+        ArrayList<Map> videoCommandSet = configure.videoCommandSet;
+        Map<String, PListObject> targetCommand = videoCommandSet.get(2);
+        baseCommand = (sString) targetCommand.get("Base Command");
+        subCommand = (sString) targetCommand.get("Sub Command");
+        command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type;
+        commandList.add(command);
+// get fps
+        command = getDeviceURL();
+
+        targetCommand = videoCommandSet.get(8);
+        baseCommand = (sString) targetCommand.get("Base Command");
+        subCommand = (sString) targetCommand.get("Sub Command");
+        command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type;
+        commandList.add(command);
+// get available storage
+        command = getDeviceURL();
+
+        ArrayList<Map> infoCommandSet = configure.infoCommandSet;
+        targetCommand = infoCommandSet.get(0);
+        baseCommand = (sString) targetCommand.get("Base Command");
+        subCommand = (sString) targetCommand.get("Sub Command");
+        command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type;
+        commandList.add(command);
+// get recorder status
+        command = getDeviceURL();
+
+        ArrayList<Map> recordCommandSet = configure.recordCommandSet;
+        targetCommand = recordCommandSet.get(1);
+        baseCommand = (sString) targetCommand.get("Base Command");
+        subCommand = (sString) targetCommand.get("Sub Command");
+        command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type;
+        commandList.add(command);
+
+        commandType = SocketManager.CMDGET_ALL;
+        socketManager.setCommandList(commandList);
+        socketManager.executeSendGetTaskList(commandList, commandType);
     }
 }

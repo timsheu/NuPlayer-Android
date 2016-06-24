@@ -33,6 +33,7 @@ import com.appunite.ffmpeg.FFmpegListener;
 import com.appunite.ffmpeg.FFmpegDisplay;
 import com.appunite.ffmpeg.FFmpegStreamInfo;
 import com.appunite.ffmpeg.NotPlayingException;
+import com.longevitysoft.android.xml.plist.domain.False;
 import com.longevitysoft.android.xml.plist.domain.PList;
 import com.longevitysoft.android.xml.plist.domain.PListObject;
 import com.longevitysoft.android.xml.plist.domain.sString;
@@ -51,6 +52,7 @@ import java.util.TimerTask;
  * A simple {@link Fragment} subclass.
  */
 public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface{
+    private boolean isTCP = false;
     private Handler handler = new Handler();
     private static int counter = 0;
     private Timer redDotTimer, checkTimer, pollingTimer;
@@ -202,6 +204,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
         configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
+
     }
 
     @Override
@@ -371,6 +374,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         params.put("fflags", "nobuffer");
         params.put("probesize", "5120");
         params.put("flush_packets", "1");
+        if (isTCP){
+            params.put("rtsp_transport", "tcp");
+        }
         mMpegPlayer.setMpegListener(this);
         mMpegPlayer.setDataSource(localURL, params, FFmpegPlayer.UNKNOWN_STREAM, mAudioStreamNo,
                 mSubtitleStreamNo);
@@ -457,10 +463,16 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         setDataSource();
     }
 
+    @Override
+    public void updateSettingContent(String category, String value) {
+
+    }
+
     private String getDeviceURL(){
         String cameraName = "Setup Camera " + cameraSerial;
         SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
         String urlString = preference.getString("URL", "DEFAULT");
+        isTCP = preference.getBoolean("Transmission", false);
         localURL = new String(urlString);
         String [] ipCut = urlString.split("/");
         String ip = ipCut[2];
