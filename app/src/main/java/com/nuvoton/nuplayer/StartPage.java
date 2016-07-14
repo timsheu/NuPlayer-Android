@@ -45,10 +45,12 @@ public class StartPage extends AppCompatActivity {
                 showTutorial();
             }
         });
-        configure = ReadConfigure.getInstance(this);
-        if (configure.isTutorial()){
-            showTutorial();
-        }
+//        configure = ReadConfigure.getInstance(this);
+//        boolean isTutorial = configure.isTutorial();
+//        Log.d(TAG, "onCreate: " + String.valueOf(isTutorial));
+//        if (isTutorial){
+//            showTutorial();
+//        }
     }
 
     private void openLivePage(int pageIndex){
@@ -65,10 +67,6 @@ public class StartPage extends AppCompatActivity {
     }
 
     private void showTutorial(){
-        String preferenceName = "Setup Camera 1";
-        SharedPreferences preferences = getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
-        preferences.edit().putBoolean("first created", false);
-        preferences.edit().apply();
         configure.setTutorial(false);
         Intent intent = new Intent();
         intent.setClass(this, TutorialActivity.class);

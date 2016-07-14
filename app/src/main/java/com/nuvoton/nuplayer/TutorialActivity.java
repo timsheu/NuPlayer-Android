@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import android.widget.Button;
 import com.nuvoton.socketmanager.ReadConfigure;
 
 public class TutorialActivity extends AppCompatActivity {
-
+static String TAG = "Tutorial";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,9 @@ public class TutorialActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                        finish();
+                        SharedPreferences preferences = getSharedPreferences("Setup Camera 1", Context.MODE_PRIVATE);
+                        preferences.edit().putBoolean("First Created", false).commit();
+                        Log.d(TAG, "onClick: " + preferences.getBoolean("First Created", false));
                     }
                 });
             }

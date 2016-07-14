@@ -167,8 +167,7 @@ public class ReadConfigure {
         if (clear == true){
             editor.clear();
         }
-        editor.putBoolean("first created", true);
-        readConfigure.isTutorial = true;
+        editor.putBoolean("First Created", true);
         editor.putString("Adaptive", "0");
         editor.putString("Fixed Quality", "0");
         editor.putString("Fixed Bit Rate", "0");
@@ -214,7 +213,7 @@ public class ReadConfigure {
         String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
         Log.d(TAG, "initSharedPreference: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
-        boolean isFirst = preferences.getBoolean("first created", false);
+        boolean isFirst = preferences.getBoolean("First Created", false);
         return isFirst;
     }
 
@@ -222,8 +221,11 @@ public class ReadConfigure {
         String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
         Log.d(TAG, "initSharedPreference: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
-        preferences.edit().putBoolean("first created", option);
-        preferences.edit().commit();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("First created", option).commit();
+        if (cameraSerial == 1){
+            readConfigure.isTutorial = option;
+        }
     }
 
     public boolean isTutorial(){
@@ -232,6 +234,7 @@ public class ReadConfigure {
 
     public void setTutorial(boolean option){
         this.isTutorial = option;
+        setFirstCreated(1, false);
     }
 
 }
