@@ -457,7 +457,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     public void deviceIsAlive() {
         onlineText.setText(R.string.online);
 //        onlineText.setTextColor(0x000000);
-        repeatRedDot(true);
         repeatCheck(false);
         repeatPolling(true);
         setDataSource();

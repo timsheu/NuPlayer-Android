@@ -10,8 +10,13 @@
     <string name="audio_category_title_dvr">Audio Stream</string>
     <string name="wifi_category_title_dvr">Wireless Setup</string>
     <string name="info_category_title_dvr">Device Information</string>
+    <string name="exit_turorial">Click to Begin!</string>
 
     <string name="online">ONLINE</string>
     <string name="offline">OFFLINE</string>
-
+    <string name="pager_platform">Select Platform!</string>
+    <string name="pager_select">Select Camera!</string>
+    <string name="pager_streaming">Start Streaming!</string>
+    <string name="pager_files">Play Files!</string>
+    <string name="pager_settings">Do Settings!</string>
 </resources>

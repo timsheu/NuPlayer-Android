@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto">
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:background="@drawable/files"
+    app:layout_heightPercent="80%"
+    app:layout_widthPercent="80%"
+    android:id="@+id/imageView5" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Play Files !"
+        android:id="@+id/textView4"
+        android:layout_above="@+id/imageView5"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold" />
+</android.support.percent.PercentRelativeLayout>

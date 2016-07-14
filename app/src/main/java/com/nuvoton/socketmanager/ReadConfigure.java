@@ -23,6 +23,7 @@ import java.util.Set;
  * Created by timsheu on 6/3/16.
  */
 public class ReadConfigure {
+    private boolean isTutorial = true;
     private static Context contextLocal;
     private static final String TAG = "ReadConfigure";
     private static ReadConfigure readConfigure = new ReadConfigure();
@@ -47,8 +48,10 @@ public class ReadConfigure {
         Log.d(TAG, "getInstance: ");
         contextLocal = context;
         for (int i=0; i<5; i++){
-            if (isSharedpreferenceCreated(i) == false) {
+            if ( !isSharedpreferenceCreated(i) ) {
                 initSharedPreference(i, true);
+            }else {
+                setFirstCreated(i, false);
             }
         }
         new Thread(new Runnable() {
@@ -165,6 +168,7 @@ public class ReadConfigure {
             editor.clear();
         }
         editor.putBoolean("first created", true);
+        readConfigure.isTutorial = true;
         editor.putString("Adaptive", "0");
         editor.putString("Fixed Quality", "0");
         editor.putString("Fixed Bit Rate", "0");
@@ -210,11 +214,24 @@ public class ReadConfigure {
         String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
         Log.d(TAG, "initSharedPreference: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
-        if (preferences.getBoolean("first created", false)){
-            return true;
-        }else {
-            return false;
-        }
+        boolean isFirst = preferences.getBoolean("first created", false);
+        return isFirst;
+    }
+
+    private static void setFirstCreated(int cameraSerial, boolean option){
+        String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
+        Log.d(TAG, "initSharedPreference: " + preferenceName);
+        SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
+        preferences.edit().putBoolean("first created", option);
+        preferences.edit().commit();
+    }
+
+    public boolean isTutorial(){
+        return this.isTutorial;
+    }
+
+    public void setTutorial(boolean option){
+        this.isTutorial = option;
     }
 
 }

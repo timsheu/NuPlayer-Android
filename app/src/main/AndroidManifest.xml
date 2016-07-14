@@ -24,7 +24,8 @@
         <activity
             android:name=".FilePlayActivity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".QRCode"></activity>
+        <activity android:name=".QRCode" />
+        <activity android:name=".TutorialActivity"></activity>
     </application>
 
 </manifest>

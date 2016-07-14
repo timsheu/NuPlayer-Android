@@ -50,4 +50,12 @@
             android:textColor="#007DFF"
             />
     </GridLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Tutorial"
+        android:id="@+id/showTutorial"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
