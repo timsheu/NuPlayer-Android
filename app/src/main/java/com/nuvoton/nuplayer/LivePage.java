@@ -1,5 +1,6 @@
 package com.nuvoton.nuplayer;
 
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -34,6 +35,9 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
     private AHBottomNavigation bottomNavigation;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
     private FragmentManager fragmentManager = getFragmentManager();
+    private LiveFragment liveFragment = null;
+    private FileFragment fileFragment = null;
+    private SettingFragment settingFragment = null;
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
@@ -101,11 +105,19 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         final Bundle bundle = new Bundle();
         bundle.putString("Platform", platform);
         bundle.putString("CameraSerial", cameraSerial);
-
+        if (liveFragment == null){
+            liveFragment = LiveFragment.newInstance(bundle);
+        }
+        if (settingFragment == null){
+            settingFragment = SettingFragment.newInstance(bundle);
+        }
+        if (fileFragment == null){
+            fileFragment = FileFragment.newInstance(bundle);
+        }
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         AHBottomNavigationItem liveItem = new AHBottomNavigationItem("Live", R.drawable.livetab);
         AHBottomNavigationItem fileItem = new AHBottomNavigationItem("File", R.drawable.foldertab);
-        AHBottomNavigationItem settingItem = new AHBottomNavigationItem("Setting", R.drawable.geartab);
+        final AHBottomNavigationItem settingItem = new AHBottomNavigationItem("Setting", R.drawable.geartab);
 
         bottomNavigationItems.add(liveItem);
         bottomNavigationItems.add(fileItem);
@@ -115,39 +127,47 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         bottomNavigation.setAccentColor(Color.parseColor("#007DFF"));
 
         bottomNavigation.setNotification(0, 0);
-        LiveFragment fragment = new LiveFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_content, fragment)
-                .commit();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position, boolean wasSelected){
-                index = position;
+                if (index == position) return;
+                FragmentTransaction trans = fragmentManager.beginTransaction();
+                if (liveFragment.isAdded()) trans.hide(liveFragment);
+                if (fileFragment.isAdded()) trans.hide(fileFragment);
+                if (settingFragment.isAdded()) trans.hide(settingFragment);
+
                 if (position == 0){
-                    LiveFragment fragment = LiveFragment.newInstance(bundle);
-                    fragment.setArguments(bundle);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_content, fragment)
-                            .commit();
+                    if (!liveFragment.isAdded()){
+                        trans.add(R.id.fragment_content, liveFragment);
+                    }else{
+                        trans.show(liveFragment);
+                    }
                 }else if (position == 1){
-                    FileFragment fragment = FileFragment.newInstance(bundle);
-                    fragment.setArguments(bundle);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_content, fragment)
-                            .commit();
+                    if (!fileFragment.isAdded()){
+                        trans.add(R.id.fragment_content, fileFragment);
+                    }else{
+                        trans.show(fileFragment);
+                    }
                 }else{
-                    SettingFragment fragment = SettingFragment.newInstance(bundle);
-                    fragment.setArguments(bundle);
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_content, fragment)
-                            .commit();
+                    if (!settingFragment.isAdded()){
+                        trans.add(R.id.fragment_content, settingFragment);
+                    }else{
+                        trans.show(settingFragment);
+                    }
                 }
+                trans.commit();
                 bottomNavigation.setNotification(0, position);
+                index = position;
             }
         });
-        changeFragment(0);
+        FragmentTransaction trans = fragmentManager.beginTransaction();
+        if (!liveFragment.isAdded()){
+            trans.add(R.id.fragment_content, liveFragment).commit();
+        }else{
+            trans.show(liveFragment).commit();
+        }
     }
 
     private void changeFragment(int savedIndex){
@@ -156,21 +176,26 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         bundle.putString("CameraSerial", cameraSerial);
         index = savedIndex;
         if (index == 0){
-            LiveFragment fragment = LiveFragment.newInstance(bundle);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_content, fragment)
-                    .commit();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            if (!liveFragment.isAdded()){
+                trans.hide(fileFragment).hide(settingFragment).add(R.id.fragment_content, liveFragment).commit();
+            }else{
+                trans.hide(fileFragment).hide(settingFragment).show(liveFragment).commit();
+            }
         }else if (index == 1){
-            FileFragment fragment = FileFragment.newInstance(bundle);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_content, fragment)
-                    .commit();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            if (!fileFragment.isAdded()){
+                trans.hide(liveFragment).hide(settingFragment).add(R.id.fragment_content, fileFragment).commit();
+            }else{
+                trans.hide(liveFragment).hide(settingFragment).show(fileFragment).commit();
+            }
         }else{
-            SettingFragment fragment = new SettingFragment();
-            fragment.setArguments(bundle);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_content, fragment)
-                    .commit();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            if (!settingFragment.isAdded()){
+                trans.hide(fileFragment).hide(liveFragment).add(R.id.fragment_content, settingFragment).commit();
+            }else{
+                trans.hide(fileFragment).hide(liveFragment).show(settingFragment).commit();
+            }
         }
         bottomNavigation.setNotification(0, index);
         bottomNavigation.setCurrentItem(index);

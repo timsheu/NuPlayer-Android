@@ -22,9 +22,7 @@ static String TAG = "Tutorial";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ReadConfigure configure = ReadConfigure.getInstance(this);
         setContentView(R.layout.activity_tutorial);
-
         ViewPager viewPager = (ViewPager) findViewById(R.id.tutorialPager);
         viewPager.setAdapter(new CustomPagerAdapter(this));
     }
@@ -64,9 +62,7 @@ static String TAG = "Tutorial";
                     @Override
                     public void onClick(View v) {
                        finish();
-                        SharedPreferences preferences = getSharedPreferences("Setup Camera 1", Context.MODE_PRIVATE);
-                        preferences.edit().putBoolean("First Created", false).commit();
-                        Log.d(TAG, "onClick: " + preferences.getBoolean("First Created", false));
+                        ReadConfigure.setTutorial(1, false);
                     }
                 });
             }

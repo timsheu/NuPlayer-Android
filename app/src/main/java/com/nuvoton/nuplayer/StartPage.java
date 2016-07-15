@@ -45,12 +45,12 @@ public class StartPage extends AppCompatActivity {
                 showTutorial();
             }
         });
-//        configure = ReadConfigure.getInstance(this);
-//        boolean isTutorial = configure.isTutorial();
-//        Log.d(TAG, "onCreate: " + String.valueOf(isTutorial));
-//        if (isTutorial){
-//            showTutorial();
-//        }
+        configure = ReadConfigure.getInstance(this);
+        boolean isTutorial = configure.isTutorial();
+        Log.d(TAG, "onCreate: " + String.valueOf(isTutorial));
+        if (isTutorial){
+            showTutorial();
+        }
     }
 
     private void openLivePage(int pageIndex){
@@ -67,7 +67,7 @@ public class StartPage extends AppCompatActivity {
     }
 
     private void showTutorial(){
-        configure.setTutorial(false);
+        configure.setTutorial(1, false);
         Intent intent = new Intent();
         intent.setClass(this, TutorialActivity.class);
         intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);

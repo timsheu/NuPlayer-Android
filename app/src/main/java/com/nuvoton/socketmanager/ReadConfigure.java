@@ -51,7 +51,7 @@ public class ReadConfigure {
             if ( !isSharedpreferenceCreated(i) ) {
                 initSharedPreference(i, true);
             }else {
-                setFirstCreated(i, false);
+                setTutorial(i, false);
             }
         }
         new Thread(new Runnable() {
@@ -167,6 +167,7 @@ public class ReadConfigure {
         if (clear == true){
             editor.clear();
         }
+        editor.putBoolean("Tutorial", false);
         editor.putBoolean("First Created", true);
         editor.putString("Adaptive", "0");
         editor.putString("Fixed Quality", "0");
@@ -211,30 +212,26 @@ public class ReadConfigure {
 
     private static boolean isSharedpreferenceCreated(int cameraSerial){
         String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
-        Log.d(TAG, "initSharedPreference: " + preferenceName);
+        Log.d(TAG, "isSharedPreference: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         boolean isFirst = preferences.getBoolean("First Created", false);
         return isFirst;
     }
 
-    private static void setFirstCreated(int cameraSerial, boolean option){
+    public static boolean isTutorial(){
+        return readConfigure.isTutorial;
+    }
+
+    public static void setTutorial(int cameraSerial, boolean option){
+        readConfigure.isTutorial = option;
         String preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
-        Log.d(TAG, "initSharedPreference: " + preferenceName);
+        Log.d(TAG, "setTutorial: " + preferenceName);
         SharedPreferences preferences = contextLocal.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("First created", option).commit();
+        editor.putBoolean("Tutorial", option).commit();
         if (cameraSerial == 1){
             readConfigure.isTutorial = option;
         }
-    }
-
-    public boolean isTutorial(){
-        return this.isTutorial;
-    }
-
-    public void setTutorial(boolean option){
-        this.isTutorial = option;
-        setFirstCreated(1, false);
     }
 
 }

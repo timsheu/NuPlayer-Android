@@ -411,7 +411,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         isPlaying = false;
         Log.d(TAG, "onFFPause: ");
         playButton.setImageResource(R.drawable.play);
-        playButton.setEnabled(true);
         repeatRedDot(false);
     }
 
@@ -419,7 +418,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         isPlaying = false;
         Log.d(TAG, "onFFStop: ");
         playButton.setImageResource(R.drawable.play);
-        playButton.setEnabled(true);
         repeatRedDot(false);
     }
 
