@@ -9,7 +9,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:name=".CrashReport">
         <activity android:name=".StartPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +26,7 @@
             android:name=".FilePlayActivity"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".QRCode" />
-        <activity android:name=".TutorialActivity"></activity>
+        <activity android:name=".TutorialActivity" />
     </application>
 
 </manifest>
