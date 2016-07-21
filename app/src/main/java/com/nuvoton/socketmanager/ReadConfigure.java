@@ -167,6 +167,7 @@ public class ReadConfigure {
         if (clear == true){
             editor.clear();
         }
+        editor.putString("Camera Port", "80");
         editor.putBoolean("Tutorial", false);
         editor.putBoolean("First Created", true);
         editor.putString("Adaptive", "0");

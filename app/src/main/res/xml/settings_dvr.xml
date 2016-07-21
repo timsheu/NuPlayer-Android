@@ -18,6 +18,12 @@
             android:summary="Click to edit camera URL address."
             android:defaultValue="rtsp://192.168.100.1/cam1/h264"
             />
+        <EditTextPreference
+            android:key="Camera Port"
+            android:title="Camera Port"
+            android:summary="Click to edit camera port."
+            android:defaultValue="80"
+            />
         <ListPreference
             android:key="Resolution"
             android:title="Resolution"

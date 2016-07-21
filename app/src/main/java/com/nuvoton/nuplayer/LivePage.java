@@ -16,7 +16,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 
-public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBottomBarListener {
+public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBottomBarListener, SettingFragment.SettingFragmentInterface {
     // live view callbacks
     public void onHideBottomBar(boolean isHide){
         if (isHide){
@@ -110,6 +110,7 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         }
         if (settingFragment == null){
             settingFragment = SettingFragment.newInstance(bundle);
+            settingFragment.settingFragmentInterface = this;
         }
         if (fileFragment == null){
             fileFragment = FileFragment.newInstance(bundle);
@@ -207,5 +208,10 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         }else {
             bottomNavigation.restoreBottomNavigation(true);
         }
+    }
+
+    @Override
+    public void restartStream() {
+        liveFragment.restartStream();
     }
 }

@@ -37,6 +37,10 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     private static String platform, cameraSerial, preferenceName;
     private String TAG = "SettingFragment";
     private ArrayList<Preference> settingArrayList;
+    SettingFragmentInterface settingFragmentInterface;
+    public interface SettingFragmentInterface {
+        public void restartStream();
+    }
     public static SettingFragment newInstance(Bundle bundle){
         platform = bundle.getString("Platform");
         cameraSerial = bundle.getString("CameraSerial");
@@ -294,6 +298,11 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
                 commandType = SocketManager.CMDSET_RECORD;
                 break;
+            case "Camera URL":
+            case "Camera Port":
+                settingFragmentInterface.restartStream();
+                callSend= false;
+                break;
         }
         Log.d(TAG, "determineSettings: " + command);
         if (socketManager != null && callSend == true && plugin == false){
@@ -310,7 +319,8 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         String urlString = preference.getString("URL", "DEFAULT");
         String [] ipCut = urlString.split("/");
         String ip = ipCut[2];
-        String url = "http://" + ip + ":80/";
+        String port = preference.getString("Port", "80");
+        String url = "http://" + ip + ":" + port + "/";
         return url;
     }
 

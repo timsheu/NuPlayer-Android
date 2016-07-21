@@ -52,6 +52,7 @@ import java.util.TimerTask;
  * A simple {@link Fragment} subclass.
  */
 public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface{
+    private boolean isRestart = false, isPolling = false, isRedDot = false, isRepeatCheck = false;
     private boolean isTCP = false;
     private Handler handler = new Handler();
     private static int counter = 0;
@@ -80,6 +81,28 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     OnHideBottomBarListener mCallback;
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (isRestart){
+            isRestart = false;
+            if (mMpegPlayer != null){
+                mMpegPlayer.stop();
+            }
+            repeatPolling(false);
+            repeatRedDot(false);
+            if (!isRepeatCheck) repeatCheck(true);
+        }
+        if (hidden){
+            repeatPolling(false);
+            repeatRedDot(false);
+            repeatCheck(false);
+        }else{
+            if (!isPolling) repeatPolling(true);
+            if (!isRedDot) repeatRedDot(true);
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.snapshotButton:
@@ -90,7 +113,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                 playButton.setEnabled(false);
                 if (isPlaying == false){
                     isPlaying = true;
-                    repeatCheck(true);
+                    if (!isRepeatCheck) repeatCheck(true);
                 }else {
                     isPlaying = false;
                     mMpegPlayer.stop();
@@ -126,7 +149,8 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         isTracking = false;
     }
 
-    public interface OnHideBottomBarListener{
+    public interface OnHideBottomBarListener
+    {
         public void onHideBottomBar(boolean isHide);
     }
 
@@ -230,7 +254,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
         repeatCheck(false);
-        repeatCheck(true);
+        if (!isRepeatCheck) repeatCheck(true);
     }
 
     private void populateViewForOrientation(LayoutInflater inflater, ViewGroup viewGroup) {
@@ -261,7 +285,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             plarform = getArguments().getString("Platform");
             cameraSerial = getArguments().getString("CameraSerial");
         }
-        repeatCheck(true);
+        if (!isRepeatCheck) repeatCheck(true);
     }
 
     public void determineOrientation(){
@@ -311,7 +335,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         public void run(){
             Log.d(TAG, "run: timer polling check " + String.valueOf(counter));
             if (counter >= 5){
-                onlineText.setText(R.string.offline);
+//                onlineText.setText(R.string.offline);
                 repeatCheck(true);
                 repeatRedDot(false);
                 repeatPolling(false);
@@ -322,6 +346,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 
     private void repeatCheck(boolean option){
         Log.d(TAG, "repeatCheck: " + String.valueOf(option));
+        isRepeatCheck = option;
         if (option == true){
             checkTimer = new Timer(true);
             checkTimer.schedule(new TimerSetDataSource(), 0, 5000);
@@ -335,6 +360,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 
     private void repeatRedDot(boolean option){
         Log.d(TAG, "repeatRedDot: " + String.valueOf(option));
+        isRedDot = option;
         if (option == true){
             handler.post(timerSetRedDot);
 //            redDotTimer = new Timer(true);
@@ -347,6 +373,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 
     private void repeatPolling(boolean option){
         Log.d(TAG, "repeatPolling: " + String.valueOf(option));
+        isPolling = option;
         if (option == true){
             pollingTimer = new Timer(true);
             pollingTimer.schedule(new TimerPollingCheck(), 0, 10000);
@@ -404,7 +431,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         Log.d(TAG, "onFFResume: ");
         playButton.setImageResource(R.drawable.pause);
         playButton.setEnabled(true);
-        repeatRedDot(true);
+        if (!isRedDot) repeatRedDot(true);
     }
 
     public void onFFPause(NotPlayingException err){
@@ -473,7 +500,8 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         localURL = new String(urlString);
         String [] ipCut = urlString.split("/");
         String ip = ipCut[2];
-        String url = "http://" + ip + ":80/";
+        String port = preference.getString("Camera Port", "80");
+        String url = "http://" + ip + ":" + port +"/";
         return url;
     }
 
@@ -487,6 +515,13 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         command = command + baseCommand.getValue() + "?" + action.getValue();
         if (socketManager != null){
             socketManager.executeSendGetTask(command, SocketManager.CMDCHECK_STORAGE);
+        }
+    }
+
+    public void restartStream(){
+        isRestart = true;
+        if (mMpegPlayer != null) {
+            mMpegPlayer.stop();
         }
     }
 
