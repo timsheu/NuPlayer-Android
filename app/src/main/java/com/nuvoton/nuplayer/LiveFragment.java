@@ -52,6 +52,7 @@ import java.util.TimerTask;
  * A simple {@link Fragment} subclass.
  */
 public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface{
+    private TwoWayTalking mTwoWayTalking;
     private boolean isRestart = false, isPolling = false, isRedDot = false, isRepeatCheck = false;
     private boolean isTCP = false;
     private Handler handler = new Handler();
@@ -72,7 +73,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     private FFmpegPlayer mMpegPlayer;
     private SurfaceView mVideoView;
     private SeekBar seekBar;
-    private ImageButton snapshotButton, playButton, expandButton;
+    private ImageButton snapshotButton, playButton, expandButton, microPhoneButton;
     private int mAudioStreamNo = FFmpegPlayer.UNKNOWN_STREAM;
     private int mSubtitleStreamNo = FFmpegPlayer.NO_STREAM;
     private static final String TAG = "LiveFragment";
@@ -110,7 +111,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                 break;
             case R.id.playButton:
                 Log.d(TAG, "onClick: play");
-                playButton.setEnabled(false);
+                setButtons(false);
                 if (isPlaying == false){
                     isPlaying = true;
                     if (!isRepeatCheck) repeatCheck(true);
@@ -128,6 +129,19 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                     orientation = Configuration.ORIENTATION_LANDSCAPE;
                     getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 }
+                break;
+            case R.id.microphoneButton:
+                Log.d(TAG, "onClick: microphone");
+                mTwoWayTalking = TwoWayTalking.getInstance();
+                if (mTwoWayTalking.isRecording){
+                    mTwoWayTalking.stopRecording();
+                    microPhoneButton.setImageResource(R.drawable.microphone_mute);
+                }else{
+                    mTwoWayTalking.startRecording();
+                    mTwoWayTalking.pokeClient(getDeviceURL(), "tcp");
+                    microPhoneButton.setImageResource(R.drawable.microphone);
+                }
+
                 break;
             default:
                 break;
@@ -181,6 +195,10 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         seekBar = (SeekBar) thisView.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setEnabled(false);
+
+        microPhoneButton = (ImageButton) thisView.findViewById(R.id.microphoneButton);
+        microPhoneButton.setOnClickListener(this);
+        microPhoneButton.setEnabled(false);
 
         onlineText = (TextView) thisView.findViewById(R.id.onlineText);
         progressBar = (ProgressBar) thisView.findViewById(R.id.progressBar);
@@ -446,6 +464,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         Log.d(TAG, "onFFStop: ");
         playButton.setImageResource(R.drawable.play);
         repeatRedDot(false);
+        setButtons(true);
     }
 
     public void onFFUpdateTime(long currentTimeUs, long videoDurationUs, boolean isFinished){
@@ -485,6 +504,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         repeatCheck(false);
         repeatPolling(true);
         setDataSource();
+        setButtons(true);
     }
 
     @Override
@@ -523,6 +543,13 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         if (mMpegPlayer != null) {
             mMpegPlayer.stop();
         }
+    }
+
+    private void setButtons(boolean enable){
+        playButton.setEnabled(enable);
+        snapshotButton.setEnabled(enable);
+        expandButton.setEnabled(enable);
+        microPhoneButton.setEnabled(enable);
     }
 
 }

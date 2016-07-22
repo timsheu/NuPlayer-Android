@@ -47,7 +47,7 @@ public class SocketManager {
     public static final String CMDSET_PLUGIN="14";
     public static final String CMDGET_ALL="15";
     public static final String CMDSET_RECORD="16";
-
+    public static final String CMDSET_TWOWAY="17";
 
     Timer timer = new Timer();
 

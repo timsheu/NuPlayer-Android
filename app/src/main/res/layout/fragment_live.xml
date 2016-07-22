@@ -106,4 +106,17 @@
         android:id="@+id/progressBar"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/microphoneButton"
+        android:src="@drawable/microphone_mute"
+        android:scaleType="fitCenter"
+        android:background="#00ffffff"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/snapshotButton"
+        android:layout_alignStart="@+id/snapshotButton"
+        android:layout_marginTop="10dp" />
+
 </RelativeLayout>

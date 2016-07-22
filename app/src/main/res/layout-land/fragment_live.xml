@@ -77,6 +77,19 @@
         android:paddingRight="5dp"
         />
 
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/microphoneButton"
+        android:layout_below="@+id/snapshotButton"
+        android:layout_alignEnd="@+id/videoView"
+        android:src="@drawable/microphone_mute"
+        android:scaleType="fitCenter"
+        android:background="#00ffffff"
+        android:paddingRight="5dp"
+        android:layout_marginBottom="10dp"
+        />
+
     <ImageView
         android:layout_width="8dp"
         android:layout_height="8dp"
