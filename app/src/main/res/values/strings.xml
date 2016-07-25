@@ -19,5 +19,5 @@
     <string name="pager_streaming">Start Streaming!</string>
     <string name="pager_files">Play Files!</string>
     <string name="pager_settings">Do Settings!</string>
-    <string name="crash_toast_text">Crash detected! Send E-mail report to developer.</string>
+    <string name="crash_toast_text">Send E-mail report to developer !!</string>
 </resources>

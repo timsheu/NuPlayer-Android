@@ -7,6 +7,7 @@ import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.support.v7.preference.Preference;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nuvoton.socketmanager.SocketManager;
 
@@ -22,6 +23,11 @@ import java.net.Socket;
  * Created by timsheu on 7/21/16.
  */
 public class TwoWayTalking {
+
+    public interface TwoWayTalkingInterface {
+        public void showToast(String message);
+    }
+    private TwoWayTalkingInterface mInterface;
     private ServerSocket mServerSocket = null;
     static public boolean isRecording = false;
     static final String TAG = "TwoWayTalking";
@@ -47,6 +53,7 @@ public class TwoWayTalking {
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, frequency, inputChannelConfiguration, audioEncoding, recBufSize);
         audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, frequency, outputChannelConfiguration, audioEncoding, playBufSize, AudioTrack.MODE_STREAM, audioRecord.getAudioSessionId());
         new RecordThread().start();
+        mInterface.showToast("Two-way talking started.");
     }
 
     public void stopRecording(){
@@ -79,6 +86,7 @@ public class TwoWayTalking {
                 dos.close();
                 os.close();
                 socketClient.close();
+                mInterface.showToast("Two-way talking ends.");
             }catch (Throwable t){
                 Log.e(TAG, "Record Thread run: " + t.getMessage() );
             }
@@ -91,5 +99,9 @@ public class TwoWayTalking {
             SocketManager socketManager = new SocketManager();
             socketManager.executeSendGetTask(command, SocketManager.CMDSET_TWOWAY);
         }
+    }
+
+    public void setInterface(TwoWayTalkingInterface mInterface){
+        twoWayTalking.mInterface = mInterface;
     }
 }

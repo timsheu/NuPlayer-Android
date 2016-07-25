@@ -27,8 +27,8 @@
 
 
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:id="@+id/playButton"
             android:src="@drawable/play"
             android:scaleType="fitCenter"
@@ -39,8 +39,8 @@
             />
 
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:id="@+id/expandButton"
             android:src="@drawable/expand"
             android:scaleType="fitCenter"
@@ -66,8 +66,8 @@
     </RelativeLayout>
 
     <ImageButton
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/snapshotButton"
         android:layout_alignTop="@+id/videoView"
         android:layout_alignEnd="@+id/videoView"
@@ -78,8 +78,8 @@
         />
 
     <ImageButton
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/microphoneButton"
         android:layout_below="@+id/snapshotButton"
         android:layout_alignEnd="@+id/videoView"

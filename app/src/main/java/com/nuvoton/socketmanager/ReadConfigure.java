@@ -185,6 +185,8 @@ public class ReadConfigure {
         editor.putBoolean("Device Mic", true);
         editor.putString("SSID", "SkyEye");
         editor.putString("Password", "12345678");
+        editor.putString("Send Report", "1");
+        editor.putBoolean("Audio Duplex", true);
         Set<String> set = new LinkedHashSet<String>();
         if (cameraSerial == 0 || cameraSerial == 1){ // DVR and local IP
             editor.putString("Name", "LOCAL-IP");

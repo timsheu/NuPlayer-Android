@@ -82,6 +82,13 @@
             android:summaryOff="RTP is over UDP."
             />
 
+        <SwitchPreference
+            android:key="Audio Duplex"
+            android:title="Send audio in half-duplex or duplex"
+            android:summaryOn="Audio is sent in duplex."
+            android:summaryOff="Audio is sent in half-duplex."
+            />
+
         <ListPreference
             android:key="Reboot"
             android:title="Reboot Device"
@@ -90,13 +97,15 @@
             android:entries="@array/reboot_device_list"
             android:defaultValue="1"
             />
-        <!--<ListPreference-->
-            <!--android:key="Reset Data"-->
-            <!--android:title="Reset Data"-->
-            <!--android:summary="Click to reset data."-->
-            <!--android:entryValues="@array/reset_data_value_list"-->
-            <!--android:entries="@array/reset_data_list"-->
-            <!--/>-->
+        <ListPreference
+            android:key="Send Report"
+            android:title="Send Report"
+            android:summary="Click to send report through E-mail"
+            android:entries="@array/send_report"
+            android:entryValues="@array/send_report_value"
+            android:dialogTitle="Send Report"
+            android:defaultValue="1"
+            />
 
     </PreferenceCategory>
 

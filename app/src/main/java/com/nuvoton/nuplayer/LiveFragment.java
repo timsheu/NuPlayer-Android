@@ -26,6 +26,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.appunite.ffmpeg.FFmpegError;
 import com.appunite.ffmpeg.FFmpegPlayer;
@@ -51,7 +52,8 @@ import java.util.TimerTask;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface{
+public class LiveFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener, FFmpegListener, SocketInterface, View.OnTouchListener, TwoWayTalking.TwoWayTalkingInterface {
+    private boolean isDuplex = true;
     private TwoWayTalking mTwoWayTalking;
     private boolean isRestart = false, isPolling = false, isRedDot = false, isRepeatCheck = false;
     private boolean isTCP = false;
@@ -97,10 +99,15 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             repeatPolling(false);
             repeatRedDot(false);
             repeatCheck(false);
+            TwoWayTalking mTwoWay = TwoWayTalking.getInstance();
+            mTwoWay.setInterface(this);
+            mTwoWay.stopRecording();
+            microPhoneButton.setImageResource(R.drawable.microphone_mute);
         }else{
             if (!isPolling) repeatPolling(true);
             if (!isRedDot) repeatRedDot(true);
         }
+        isAudioDuplex();
     }
 
     @Override
@@ -132,16 +139,19 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
                 break;
             case R.id.microphoneButton:
                 Log.d(TAG, "onClick: microphone");
-                mTwoWayTalking = TwoWayTalking.getInstance();
-                if (mTwoWayTalking.isRecording){
-                    mTwoWayTalking.stopRecording();
-                    microPhoneButton.setImageResource(R.drawable.microphone_mute);
-                }else{
-                    mTwoWayTalking.startRecording();
-                    mTwoWayTalking.pokeClient(getDeviceURL(), "tcp");
-                    microPhoneButton.setImageResource(R.drawable.microphone);
-                }
+                if (isDuplex){
+                    mTwoWayTalking = TwoWayTalking.getInstance();
+                    mTwoWayTalking.setInterface(this);
 
+                    if (mTwoWayTalking.isRecording){
+                        mTwoWayTalking.stopRecording();
+                        microPhoneButton.setImageResource(R.drawable.microphone_mute);
+                    }else{
+                        mTwoWayTalking.startRecording();
+                        mTwoWayTalking.pokeClient(getDeviceURL(), "tcp");
+                        microPhoneButton.setImageResource(R.drawable.microphone);
+                    }
+                }
                 break;
             default:
                 break;
@@ -161,6 +171,51 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         isTracking = false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch ( event.getAction() ) {
+            case MotionEvent.ACTION_DOWN:
+                if (!isDuplex){
+                    mTwoWayTalking = TwoWayTalking.getInstance();
+                    mTwoWayTalking.setInterface(this);
+
+                    if (!mTwoWayTalking.isRecording){
+                        mTwoWayTalking.startRecording();
+                        mTwoWayTalking.pokeClient(getDeviceURL(), "tcp");
+                        microPhoneButton.setImageResource(R.drawable.microphone);
+                    }
+                }
+                Log.d(TAG, "onTouch: down");
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.d(TAG, "onTouch: up");
+                if (!isDuplex){
+                    mTwoWayTalking = TwoWayTalking.getInstance();
+                    mTwoWayTalking.setInterface(this);
+
+                    if (mTwoWayTalking.isRecording){
+                        mTwoWayTalking.stopRecording();
+                        microPhoneButton.setImageResource(R.drawable.microphone_mute);
+                    }
+                }
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void showToast(final String message) {
+        if (isAdded()){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
     }
 
     public interface OnHideBottomBarListener
@@ -197,7 +252,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         seekBar.setEnabled(false);
 
         microPhoneButton = (ImageButton) thisView.findViewById(R.id.microphoneButton);
+
         microPhoneButton.setOnClickListener(this);
+        microPhoneButton.setOnTouchListener(this);
         microPhoneButton.setEnabled(false);
 
         onlineText = (TextView) thisView.findViewById(R.id.onlineText);
@@ -304,6 +361,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             cameraSerial = getArguments().getString("CameraSerial");
         }
         if (!isRepeatCheck) repeatCheck(true);
+        isAudioDuplex();
     }
 
     public void determineOrientation(){
@@ -551,6 +609,17 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         expandButton.setEnabled(enable);
         microPhoneButton.setEnabled(enable);
     }
-
+    private void isAudioDuplex(){
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        isDuplex = preference.getBoolean("Audio Duplex", true);
+        if (isDuplex){
+            microPhoneButton.setOnClickListener(this);
+            microPhoneButton.setOnTouchListener(null);
+        }else {
+            microPhoneButton.setOnClickListener(null);
+            microPhoneButton.setOnTouchListener(this);
+        }
+    }
 }
 

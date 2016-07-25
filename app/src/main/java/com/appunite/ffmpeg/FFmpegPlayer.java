@@ -332,6 +332,7 @@ public class FFmpegPlayer {
         if (activity != null) {
             activity.runOnUiThread(updateTimeRunnable);
         }else {
+			if (!fragment.isAdded()) return;
             fragment.getActivity().runOnUiThread(updateTimeRunnable);
         }
 	}
