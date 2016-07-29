@@ -20,6 +20,6 @@ package com.appunite.ffmpeg;
 
 public interface FFmpegDisplay {
 
-	void setMpegPlayer(FFmpegPlayer fFmpegPlayer);
+	void setMpegPlayer(FFmpegPlayer fFmpegPlayer, String resolution);
 
 }

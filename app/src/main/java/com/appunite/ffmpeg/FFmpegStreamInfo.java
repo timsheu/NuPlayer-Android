@@ -18,6 +18,8 @@
 
 package com.appunite.ffmpeg;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class FFmpegStreamInfo {
 	public enum CodecType {
 		UNKNOWN, AUDIO, VIDEO, SUBTITLE, ATTACHMENT, NB, DATA;
 	}
-	
+	static final private String TAG = "FFmpegStreamInfo";
 	private static Map<String, Locale> sLocaleMap;
 	static {
 		String[] languages = Locale.getISOLanguages();
@@ -43,6 +45,7 @@ public class FFmpegStreamInfo {
 
 	public void setMetadata(Map<String, String> metadata) {
 		this.mMetadata = metadata;
+		Log.d(TAG, "setMetadata: " + this.getMetadata());
 	}
 
 	void setMediaTypeInternal(int mediaTypeInternal) {

@@ -56,7 +56,7 @@ static String TAG = "Tutorial";
             LayoutInflater inflater = LayoutInflater.from(mContext);
             ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), container, false);
             container.addView(layout);
-            if (position == 4){
+            if (position == 5){
                 Button button = (Button) findViewById(R.id.exit_tutorial);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -83,7 +83,8 @@ static String TAG = "Tutorial";
         SELECT(R.string.pager_select, R.layout.pager_select),
         STREAMING(R.string.pager_streaming, R.layout.pager_streaming),
         FILES(R.string.pager_files, R.layout.pager_files),
-        SETTINGS(R.string.pager_settings, R.layout.pager_settings);
+        SETTINGS(R.string.pager_settings, R.layout.pager_settings),
+        DUPLEX(R.string.pager_duplex, R.layout.pager_duplex);
 
         private int mTitleResId, mLayoutResId;
         CustomPagerEnum(int titleResId, int layoutResId){

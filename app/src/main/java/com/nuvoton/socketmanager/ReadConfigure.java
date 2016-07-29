@@ -170,9 +170,9 @@ public class ReadConfigure {
         editor.putString("Camera Port", "80");
         editor.putBoolean("Tutorial", false);
         editor.putBoolean("First Created", true);
-        editor.putString("Adaptive", "0");
-        editor.putString("Fixed Quality", "0");
-        editor.putString("Fixed Bit Rate", "0");
+        editor.putString("Adaptive", "3");
+        editor.putString("Fixed Quality", "3");
+        editor.putString("Fixed Bit Rate", "3");
         editor.putBoolean("Transmission", false);
         editor.putString("Mute", "No");
         editor.putString("Available Storage", "No");

@@ -40,7 +40,7 @@
             android:entries="@array/adaptive_list"
             android:entryValues="@array/adaptive_value_list"
             android:dialogTitle="Set Adaptive Bit Rate Level"
-            android:defaultValue="0"
+            android:defaultValue="3"
 
             />
         <ListPreference
@@ -50,7 +50,7 @@
             android:entries="@array/fixed_bitrate_list"
             android:entryValues="@array/fixed_bitrate_value_list"
             android:dialogTitle="Set Fixed Bit Rate Level"
-            android:defaultValue="0"
+            android:defaultValue="3"
             />
         <ListPreference
             android:key="Fixed Quality"
@@ -59,7 +59,7 @@
             android:entries="@array/fixed_quality_list"
             android:entryValues="@array/fixed_quality_value_list"
             android:dialogTitle="Set Fixed Quality Level"
-            android:defaultValue="0"
+            android:defaultValue="3"
             />
         <ListPreference
             android:key="FPS"
@@ -77,21 +77,21 @@
             />
         <SwitchPreference
             android:key="Transmission"
-            android:title="Video Transmission over TCP/UDP"
+            android:title="Transmission"
             android:summaryOn="RTP is over TCP."
             android:summaryOff="RTP is over UDP."
             />
 
         <SwitchPreference
             android:key="Audio Duplex"
-            android:title="Send audio in half-duplex or duplex"
-            android:summaryOn="Audio is sent in duplex."
+            android:title="Audio Duplex "
+            android:summaryOn="Audio is sent in full-duplex."
             android:summaryOff="Audio is sent in half-duplex."
             />
 
         <ListPreference
             android:key="Reboot"
-            android:title="Reboot Device"
+            android:title="Reboot"
             android:summary="Click to reboot device."
             android:entryValues="@array/reboot_device_value_list"
             android:entries="@array/reboot_device_list"

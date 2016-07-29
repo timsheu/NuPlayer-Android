@@ -32,7 +32,8 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 	public static enum ScaleType {
 		CENTER_CROP, CENTER_INSIDE, FIT_XY
 	}
-
+    private String resolution = "0";
+    static final private String TAG = "FFmpegSurfaceView";
 	private FFmpegPlayer mMpegPlayer = null;
 	private boolean mCreated = false;
 
@@ -53,18 +54,18 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 	}
 
 	@Override
-	public void setMpegPlayer(FFmpegPlayer fFmpegPlayer) {
+	public void setMpegPlayer(FFmpegPlayer fFmpegPlayer, String resolution) {
 		if (mMpegPlayer != null)
 			throw new RuntimeException(
 					"setMpegPlayer could not be called twice");
-
 		this.mMpegPlayer = fFmpegPlayer;
+        this.resolution = resolution;
 	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		
+		Log.d(TAG, "surfaceChanged: width:" + String.valueOf(width) + " ,height:" + String.valueOf(height));
 	}
 
 	@Override
@@ -75,7 +76,8 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 
 		Surface surface = holder.getSurface();
 		mMpegPlayer.render(surface);
-		mCreated = true;
+//        Log.d(TAG, "surfaceCreated: width:" + String.valueOf(m));
+        mCreated = true;
 	}
 
 	@Override
@@ -86,21 +88,25 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		float ratio = 1.66f;
+        float ratio = 1.34f; //VGA & QVGA
+        if (resolution.compareTo("2") == 0 || resolution.compareTo("3") == 0){// 360p & 720p & 1080p
+            ratio = 1.78f;
+        }
 		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
 		float width = (MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight());
 		float height = (MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom());
+        Log.d(TAG, "onMeasure: " + resolution + "width:" + String.valueOf(width) + " height: " + String.valueOf(height));
 		if (widthMode == MeasureSpec.EXACTLY){
-            Log.d("FFmpegSurface", "onMeasure: " + String.valueOf(width));
-            if (width/height > ratio){
-                height = (width / ratio) - 100;
-            }else{
-                height = (width / ratio) + 40;
-            }
+            height = (width / ratio);
 			heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)height, MeasureSpec.EXACTLY);
 		}
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.d(TAG, "onMeasure: " + resolution + "width:" + String.valueOf(width) + " height: " + String.valueOf(height));
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
+
+    public void setResolution(String resolution){
+        this.resolution = resolution;
+    }
 }

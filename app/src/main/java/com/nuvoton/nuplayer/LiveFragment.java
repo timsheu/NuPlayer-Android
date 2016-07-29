@@ -33,6 +33,7 @@ import com.appunite.ffmpeg.FFmpegPlayer;
 import com.appunite.ffmpeg.FFmpegListener;
 import com.appunite.ffmpeg.FFmpegDisplay;
 import com.appunite.ffmpeg.FFmpegStreamInfo;
+import com.appunite.ffmpeg.FFmpegSurfaceView;
 import com.appunite.ffmpeg.NotPlayingException;
 import com.longevitysoft.android.xml.plist.domain.False;
 import com.longevitysoft.android.xml.plist.domain.PList;
@@ -73,7 +74,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     private int mCurrentTimeS;
     private View thisView;
     private FFmpegPlayer mMpegPlayer;
-    private SurfaceView mVideoView;
+    private FFmpegSurfaceView mVideoView;
     private SeekBar seekBar;
     private ImageButton snapshotButton, playButton, expandButton, microPhoneButton;
     private int mAudioStreamNo = FFmpegPlayer.UNKNOWN_STREAM;
@@ -287,7 +288,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        mVideoView = (SurfaceView) getActivity().findViewById(R.id.videoView);
+        mVideoView = (FFmpegSurfaceView) getActivity().findViewById(R.id.videoView);
         mVideoView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -310,26 +311,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     public void onConfigurationChanged(Configuration newConfig) {
         Log.d(TAG, "onConfigurationChanged: live fragment");
         super.onConfigurationChanged(newConfig);
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        populateViewForOrientation(inflater, (ViewGroup) getView());
-        registerUI();
-        determineOrientation();
-        mVideoView = (SurfaceView) getView().findViewById(R.id.videoView);
-        mVideoView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (!isHide){
-                    isHide = true;
-                }else {
-                    isHide = false;
-                }
-                mCallback.onHideBottomBar(isHide);
-                return false;
-            }
-        });
-        mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
-        repeatCheck(false);
-        if (!isRepeatCheck) repeatCheck(true);
     }
 
     private void populateViewForOrientation(LayoutInflater inflater, ViewGroup viewGroup) {
@@ -462,6 +443,11 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
 
 
     private void setDataSource() {
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        String resolution = preference.getString("Resolution", "0");
+        mVideoView.setResolution(resolution);
+
         progressBar.post(new Runnable() {
             @Override
             public void run() {
@@ -474,15 +460,16 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
         File assFont = new File(Environment.getExternalStorageDirectory(),
                 "DroidSansFallback.ttf");
         params.put("ass_default_font_path", assFont.getAbsolutePath());
-        params.put("fflags", "nobuffer");
         params.put("probesize", "5120");
+        params.put("max_delay", "0");
+        params.put("fflags", "nobuffer");
         params.put("flush_packets", "1");
         if (isTCP){
             params.put("rtsp_transport", "tcp");
         }
         mMpegPlayer.setMpegListener(this);
         mMpegPlayer.setDataSource(localURL, params, FFmpegPlayer.UNKNOWN_STREAM, mAudioStreamNo,
-                mSubtitleStreamNo);
+                mSubtitleStreamNo, resolution);
     }
 
     // FFMPEG interface implementation

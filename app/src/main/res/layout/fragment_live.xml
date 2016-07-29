@@ -6,8 +6,8 @@
     tools:context="com.nuvoton.nuplayer.LiveFragment">
 
     <com.appunite.ffmpeg.FFmpegSurfaceView
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/videoView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
@@ -20,13 +20,14 @@
         android:layout_alignRight="@+id/videoView"
         android:layout_alignLeft="@+id/videoView"
         android:background="#036D6E"
-        >
+        android:padding="2dp"
+        android:minHeight="40dp">
 
         <SeekBar
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/seekBar"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:thumbTint="#FFFFFF"
             android:progressTint="#FFFFFF"
             android:layout_toRightOf="@+id/playButton"

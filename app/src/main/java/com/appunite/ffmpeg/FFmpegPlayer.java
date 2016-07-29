@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.Surface;
 
 public class FFmpegPlayer {
+    private String resolution = "0";
 	private static final String TAG = "FFmpegPlayer";
 	private static class StopTask extends AsyncTask<Void, Void, Void> {
 
@@ -89,6 +90,7 @@ public class FFmpegPlayer {
 			} else {
 				result.error = null;
 				result.streams = player.getStreamsInfo();
+				Log.d(TAG, "doInBackground: " + result.streams);
 			}
 			return result;
 		}
@@ -237,7 +239,7 @@ public class FFmpegPlayer {
 		if (error != 0)
 			throw new RuntimeException(String.format(
 					"Could not initialize player: %d", error));
-		videoView.setMpegPlayer(this);
+		videoView.setMpegPlayer(this, resolution);
 	}
 
 	public FFmpegPlayer(FFmpegDisplay videoView, Fragment fragment) {
@@ -247,7 +249,7 @@ public class FFmpegPlayer {
 		if (error != 0)
 			throw new RuntimeException(String.format(
 					"Could not initialize player: %d", error));
-		videoView.setMpegPlayer(this);
+		videoView.setMpegPlayer(this, resolution);
 	}
 
 	@Override
@@ -386,15 +388,17 @@ public class FFmpegPlayer {
 		this.setMpegListener(mpegListener);
 	}
 	
-	public void setDataSource(String url) {
-		setDataSource(url, null, UNKNOWN_STREAM, UNKNOWN_STREAM, NO_STREAM);
+	public void setDataSource(String url, String resolution) {
+		setDataSource(url, null, UNKNOWN_STREAM, UNKNOWN_STREAM, NO_STREAM, resolution);
+        this.resolution = resolution;
 	}
 
 	public void setDataSource(String url, Map<String, String> dictionary,
-			int videoStream, int audioStream, int subtitlesStream) {
+			int videoStream, int audioStream, int subtitlesStream, String resolution) {
 		new SetDataSourceTask(this).execute(url, dictionary,
 				Integer.valueOf(videoStream), Integer.valueOf(audioStream),
 				Integer.valueOf(subtitlesStream));
+        this.resolution = resolution;
 	}
 
 	public FFmpegListener getMpegListener() {

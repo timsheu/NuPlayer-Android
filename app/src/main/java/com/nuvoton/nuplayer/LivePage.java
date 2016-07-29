@@ -214,4 +214,9 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
     public void restartStream() {
         liveFragment.restartStream();
     }
+
+    @Override
+    public void manualSendReport() {
+
+    }
 }

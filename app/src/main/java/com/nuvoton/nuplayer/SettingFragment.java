@@ -42,6 +42,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     SettingFragmentInterface settingFragmentInterface;
     public interface SettingFragmentInterface {
         public void restartStream();
+        public void manualSendReport();
     }
     public static SettingFragment newInstance(Bundle bundle){
         platform = bundle.getString("Platform");
@@ -430,6 +431,9 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         socketManager.executeSendGetTaskList(commandList, commandType);
     }
     public void sendReport(){
+        if (isAdded()){
+            Toast.makeText(getActivity(), R.string.email_toast_text, Toast.LENGTH_SHORT).show();
+        }
         ACRA.getErrorReporter().handleException(new RuntimeException("Error"));
     }
 }
