@@ -7,8 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+import android.preference.EditTextPreference;
+import android.preference.PreferenceScreen;
 import android.support.v4.app.Fragment;
-import android.support.v7.preference.EditTextPreference;
 import android.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.longevitysoft.android.xml.plist.domain.PListObject;
 import com.longevitysoft.android.xml.plist.domain.sString;
+import com.nuvoton.socketmanager.CustomDialogFragment;
 import com.nuvoton.socketmanager.ReadConfigure;
 import com.nuvoton.socketmanager.SocketInterface;
 import com.nuvoton.socketmanager.SocketManager;
@@ -26,23 +28,56 @@ import com.nuvoton.socketmanager.SocketManager;
 import org.acra.ACRA;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, SocketInterface{
+public class SettingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, SocketInterface, CustomDialogFragment.DialogFragmentInterface{
     private ReadConfigure configure;
     private SocketManager socketManager;
     private String key; 
     private static String platform, cameraSerial, preferenceName;
     private String TAG = "SettingFragment";
     private ArrayList<Preference> settingArrayList;
+    private LinkedList<String> historyList = null;
     SettingFragmentInterface settingFragmentInterface;
+
+    @Override
+    public void chooseHistory(CustomDialogFragment fragment, int index) {
+        getFragmentManager().beginTransaction().remove(fragment).commit();
+        String temp = new String(historyList.get(index));
+        historyList.addFirst(temp);
+        historyList.removeLast();
+        updateHistoryList();
+    }
+
+    @Override
+    public void sendOkay(String category) {
+        if (category.compareTo("Reboot")  == 0){
+            ArrayList<Map> videoCommandSet = configure.systemCommandSet;
+            Map<String, PListObject>targetCommand = videoCommandSet.get(0);
+            sString baseCommand;
+            String command = getDeviceURL();
+            baseCommand = (sString) targetCommand.get("Base Command");
+            command = command + baseCommand.getValue();
+            String commandType = "";
+            commandType = SocketManager.CMDSET_REBOOT;
+            socketManager.executeSendGetTask(command, commandType);
+        }else if(category.compareTo("Send Report") == 0){
+            sendReport();
+        }
+        Log.d(TAG, "sendOkay: setting fragment");
+    }
+
     public interface SettingFragmentInterface {
         public void restartStream();
         public void manualSendReport();
+        public void setResolution(String resolution);
     }
     public static SettingFragment newInstance(Bundle bundle){
         platform = bundle.getString("Platform");
@@ -58,10 +93,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         preferenceName = "Setup Camera " + String.valueOf(cameraSerial);
-
-//        getActivity().getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         getPreferenceManager().setSharedPreferencesName(preferenceName);
-//        getPreferenceManager().getSharedPreferences();
         Log.d(TAG, "onCreate: " + preferenceName + " pref name: " + getPreferenceManager().getSharedPreferencesName());
         // Inflate the layout for this fragment
 
@@ -72,6 +104,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         }
 
         configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
+        getHistoryList();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,6 +135,33 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         getActivity().getApplicationContext().getSharedPreferences(preferenceName, Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        String key = preference.getKey();
+        Log.d(TAG, "onPreferenceTreeClick: " + key);
+        CustomDialogFragment dialog = new CustomDialogFragment();
+        dialog.setInterface(this);
+        if (key.compareTo("Reboot") == 0){
+            dialog.setLabel("Reboot");
+            dialog.setContent("Click OK to reboot device!");
+            dialog.show(getFragmentManager(), "Reboot");
+        }else if (key.compareTo("Send Report")  == 0){
+            dialog.setLabel("Send Report");
+            dialog.setContent("Click OK to send E-mail report!");
+            dialog.show(getFragmentManager(), "Send Report");
+        }else if (key.compareTo("History") == 0){
+            dialog.setType("Spinner");
+            dialog.setLabel("History");
+            dialog.setHistoryData(historyList);
+            dialog.show(getFragmentManager(), "History");
+        }else if (key.compareTo("URL") == 0){
+            EditTextPreference editTextPreference = (EditTextPreference) preference;
+            Log.d(TAG, "onPreferenceTreeClick: " + editTextPreference.getEditText().getText());
+            editTextPreference.getEditText().setText(historyList.get(0));
+        }
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
     private void determineSettings(String key, SharedPreferences sharedPreference){
         socketManager = new SocketManager();
         socketManager.setSocketInterface(this);
@@ -122,6 +182,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 value = sharedPreference.getString(key, "0");
                 command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
                 commandType = SocketManager.CMDSET_RESOLUTION;
+                settingFragmentInterface.setResolution(value);
                 break;
             case "Adaptive":
                 index = sharedPreference.getString("Adaptive", "0");
@@ -147,7 +208,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                     adaptiveTemp = "Pipe0_Max_Bitrate";
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=2000";
                     commandList.add(finalCommand);
-                }else if (index.equals("1")){
+                }else if (index.equals("1")) {
                     adaptiveTemp = "Pipe0_Min_Bitrate";
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=512";
                     commandList.add(finalCommand);
@@ -155,7 +216,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                     adaptiveTemp = "Pipe0_Max_Bitrate";
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=5000";
                     commandList.add(finalCommand);
-                }else{
+                }else if (index.equals("2")){
                     adaptiveTemp = "Pipe0_Min_Bitrate";
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=2000";
                     commandList.add(finalCommand);
@@ -163,12 +224,19 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                     adaptiveTemp = "Pipe0_Max_Bitrate";
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + adaptiveTemp + "&value=5000";
                     commandList.add(finalCommand);
+                }else if (index.equals("3")){
+                    return;
                 }
                 plugin = true;
                 socketManager.setCommandList(commandList);
                 commandType = SocketManager.CMDSET_ADAPTIVE;
-                sharedPreference.edit().putString("Fixed Quality", "4");
-                sharedPreference.edit().putString("Fixed Bit Rate", "4");
+                sharedPreference.edit().putString("Fixed Quality", "3");
+                ListPreference listPreference = (ListPreference) getPreferenceManager().findPreference("Fixed Quality");
+                listPreference.setValue("3");
+
+                sharedPreference.edit().putString("Fixed Bit Rate", "3");
+                listPreference = (ListPreference) getPreferenceManager().findPreference("Fixed Bit Rate");
+                listPreference.setValue("3");
                 break;
             case "Fixed Bit Rate":
                 index = sharedPreference.getString("Fixed Bit Rate", "0");
@@ -196,16 +264,22 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=2000";
                 }else if (index.equals("1")){
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=3000";
-                }else {
+                }else if (index.equals("2")){
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedBitRateTemp + "&value=5000";
+                }else if (index.equals("3")){
+                    return;
                 }
                 plugin = true;
                 commandList.add(finalCommand);
                 socketManager.setCommandList(commandList);
                 commandType = SocketManager.CMDSET_FIXED_BITRATE;
-                sharedPreference.edit().putString("Adaptive", "4");
-                sharedPreference.edit().putString("Fixed Quality", "4");
+                sharedPreference.edit().putString("Adaptive", "3");
+                listPreference = (ListPreference) getPreferenceManager().findPreference("Adaptive");
+                listPreference.setValue("3");
 
+                sharedPreference.edit().putString("Fixed Quality", "3");
+                listPreference = (ListPreference) getPreferenceManager().findPreference("Fixed Quality");
+                listPreference.setValue("3");
                 break;
             case "Fixed Quality":
                 index = sharedPreference.getString("Fixed Bit Rate", "0");
@@ -225,15 +299,22 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=50";
                 }else if (index.equals("1")){
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=40";
-                }else {
+                }else if (index.equals("2")){
                     finalCommand = command + pluginCommand + "&name=h264_encoder" + "&param=" + fixedQualityTemp + "&value=25";
+                }else if (index.equals("3")){
+                    return;
                 }
                 plugin = true;
                 commandList.add(finalCommand);
                 socketManager.setCommandList(commandList);
                 commandType = SocketManager.CMDSET_FIXED_QUALITY;
-                sharedPreference.edit().putString("Adaptive", "4");
-                sharedPreference.edit().putString("Fixed Bit Rate", "4");
+                sharedPreference.edit().putString("Adaptive", "3");
+                listPreference = (ListPreference) getPreferenceManager().findPreference("Adaptive");
+                listPreference.setValue("3");
+
+                sharedPreference.edit().putString("Fixed Bit Rate", "3");
+                listPreference = (ListPreference) getPreferenceManager().findPreference("Fixed Bit Rate");
+                listPreference.setValue("3");
                 break;
             case "FPS":
                 videoCommandSet = configure.videoCommandSet;
@@ -258,25 +339,6 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
             case "Transmission":
                 callSend = false;
                 break;
-            case "Reboot":
-                String reboot = sharedPreference.getString(key, "1");
-                if (reboot.equals("0")){
-                    videoCommandSet = configure.systemCommandSet;
-                    targetCommand = videoCommandSet.get(0);
-                    baseCommand = (sString) targetCommand.get("Base Command");
-                    command = command + baseCommand.getValue();
-                    commandType = SocketManager.CMDSET_REBOOT;
-                }
-                sharedPreference.edit().putString(key, "1");
-                break;
-//            case "Reset Data":
-//                callSend = false;
-//                String reset = sharedPreference.getString(key, "1");
-//                if (reset.equals("0")){
-//                    configure.initSharedPreference(Integer.valueOf(cameraSerial), true);
-//                    sharedPreference.edit().putString(key, "0");
-//                }
-//                break;
             case "Wi-Fi QR Code":
                 Log.d(TAG, "determineSettings: Wi-Fi QR Code");
                 String QRCode, SSID = sharedPreference.getString("SSID", "SkyEye"), Password = sharedPreference.getString("Password", "12345678");
@@ -301,33 +363,23 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
                 command = command + baseCommand.getValue() + "?command=" + subCommand.getValue() + pipe + type + "&value=" + value;
                 commandType = SocketManager.CMDSET_RECORD;
                 break;
-            case "Camera URL":
+            case "URL":
+                String url = sharedPreference.getString("URL", "");
+                historyList.removeLast();
+                historyList.addFirst(url);
+                Preference preference = getPreferenceManager().findPreference("History");
+                preference.setSummary(url);
             case "Camera Port":
                 settingFragmentInterface.restartStream();
                 callSend= false;
                 break;
-            case "Send Report":
-                String option = sharedPreference.getString(key, "1");
-                if (option.equals("0")){
-                    if (isAdded()){
-                        sendReport();
-                    }
-                }else {
-                    return;
-                }
-                sharedPreference.edit().apply();
-                option = "1";
-                sharedPreference.edit().putString(key, option);
-                ListPreference listPreference = (ListPreference) getPreferenceManager().findPreference(key);
-                listPreference.setValue(option);
-                return;
             default:
                 return;
         }
         Log.d(TAG, "determineSettings: " + command);
-        if (socketManager != null && callSend == true && plugin == false){
+        if (socketManager != null && callSend && !plugin){
             socketManager.executeSendGetTask(command, commandType);
-        }else if (socketManager != null && callSend == true && plugin == true){
+        }else if (socketManager != null && callSend && plugin){
             socketManager.executeSendGetTaskList(commandList, commandType);
         }
         sharedPreference.edit().commit();
@@ -367,13 +419,13 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
         preference.edit().putString(category, value);
         preference.edit().commit();
         if (category.equals("Recorder Status")){
-            Preference pref = (Preference)getPreferenceManager().findPreference(category);
+            Preference pref = getPreferenceManager().findPreference(category);
             if (value.equals("1"))
                 pref.setSummary("Recorder is recording");
             else
                 pref.setSummary("Recorder is stopped");
         }else if(category.equals("Available Storage")){
-            Preference pref = (Preference)getPreferenceManager().findPreference(category);
+            Preference pref = getPreferenceManager().findPreference(category);
             if (value.equals("1"))
                 pref.setSummary("Storage available on device.");
             else
@@ -435,5 +487,32 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
             Toast.makeText(getActivity(), R.string.email_toast_text, Toast.LENGTH_SHORT).show();
         }
         ACRA.getErrorReporter().handleException(new RuntimeException("Error"));
+    }
+
+    private void getHistoryList(){
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getApplicationContext().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        historyList = new LinkedList<>();
+        for (int i=0; i<5; i++){
+            String temp = preference.getString("History " + i, "-");
+            historyList.add(temp);
+        }
+        Preference preference1 = getPreferenceManager().findPreference("History");
+        preference1.setSummary(historyList.get(0));
+    }
+
+    private void updateHistoryList(){
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getActivity().getApplicationContext().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+//        Log.d(TAG, "updateHistoryList: " + preference.getString("URL", ""));
+        for (int i=0; i<5; i++){
+            editor.putString("History " + i, historyList.get(i));
+        }
+        editor.putString("URL", historyList.get(0));
+        editor.commit();
+        Preference preference1 = getPreferenceManager().findPreference("History");
+        preference1.setSummary(historyList.get(0));
+//        Log.d(TAG, "updateHistoryList: " + preference.getString("URL", ""));
     }
 }

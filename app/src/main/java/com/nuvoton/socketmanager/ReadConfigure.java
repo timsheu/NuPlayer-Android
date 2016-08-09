@@ -185,31 +185,28 @@ public class ReadConfigure {
         editor.putBoolean("Device Mic", true);
         editor.putString("SSID", "SkyEye");
         editor.putString("Password", "12345678");
-        editor.putString("Send Report", "1");
         editor.putBoolean("Audio Duplex", true);
-        Set<String> set = new LinkedHashSet<String>();
         if (cameraSerial == 0 || cameraSerial == 1){ // DVR and local IP
             editor.putString("Name", "LOCAL-IP");
             editor.putString("URL", "rtsp://192.168.100.1/cam1/h264");
-            set.add("rtsp://192.168.100.1/cam1/h264");
-            set.add("rtsp://192.168.100.1/cam1/mpeg4");
+            editor.putString("History 0", "rtsp://192.168.100.1/cam1/h264");
+            editor.putString("History 1", "rtsp://192.168.100.1/cam1/mpeg4");
         }else if (cameraSerial == 2){ //
             editor.putString("Name", "DEMO-IP");
             editor.putString("URL", "rtsp://114.35.206.240/cam1/h264");
-            set.add("rtsp://114.35.206.240/cam1/h264");
-            set.add("rtsp://114.35.206.240/cam1/mpeg4");
+            editor.putString("History 0", "rtsp://114.35.206.240/cam1/h264");
+            editor.putString("History 1", "rtsp://114.35.206.240/cam1/mpeg4");
         }else if (cameraSerial == 3){
             editor.putString("Name", "DEMO-NO-IP");
             editor.putString("URL", "rtsp://nuvoton.no-ip.biz/cam1/h264");
-            set.add("rtsp://nuvoton.no-ip.biz/cam1/h264");
-            set.add("rtsp://nuvoton.no-ip.biz/cam1/mpeg4");
+            editor.putString("History 0", "rtsp://nuvoton.no-ip.biz/cam1/h264");
+            editor.putString("History 1", "rtsp://nuvoton.no-ip.biz/cam1/mpeg4");
         }else if (cameraSerial == 4){
             editor.putString("Name", "DEMO-NO-IP");
             editor.putString("URL", "rtsp://nuvoton.no-ip.biz/cam1/h264");
-            set.add("rtsp://nuvoton.no-ip.biz/cam1/h264");
-            set.add("rtsp://nuvoton.no-ip.biz/cam1/mpeg4");
+            editor.putString("History 0", "rtsp://nuvoton.no-ip.biz/cam1/h264");
+            editor.putString("History 1", "rtsp://nuvoton.no-ip.biz/cam1/mpeg4");
         }
-        editor.putStringSet("History", set);
         editor.commit();
     }
 

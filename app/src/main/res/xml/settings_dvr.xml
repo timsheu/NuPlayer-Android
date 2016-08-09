@@ -99,12 +99,10 @@
             android:title="Recorder Status"
             android:summary="Recorder is not recording on device."/>
 
-        <ListPreference
+        <Preference
             android:key="Reboot"
             android:title="Reboot Device"
             android:summary="Click to reboot device."
-            android:entryValues="@array/reboot_device_value_list"
-            android:entries="@array/reboot_device_list"
             />
         <!--<ListPreference-->
             <!--android:key="Reset Data"-->

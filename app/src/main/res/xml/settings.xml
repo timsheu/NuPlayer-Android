@@ -13,11 +13,15 @@
             android:defaultValue="Local-Camera"
             />
         <EditTextPreference
-            android:key="Camera URL"
+            android:key="URL"
             android:title="Camera URL"
             android:summary="Click to edit camera URL address."
             android:defaultValue="rtsp://192.168.100.1/cam1/h264"
             />
+        <Preference
+            android:key="History"
+            android:title="History"
+            android:summary="%s"/>
         <EditTextPreference
             android:key="Camera Port"
             android:title="Camera Port"
@@ -77,34 +81,27 @@
             />
         <SwitchPreference
             android:key="Transmission"
-            android:title="Transmission"
+            android:title="RTP over TCP"
             android:summaryOn="RTP is over TCP."
             android:summaryOff="RTP is over UDP."
             />
 
         <SwitchPreference
-            android:key="Audio Duplex"
+            android:key="Audio Full-Duplex"
             android:title="Audio Duplex "
             android:summaryOn="Audio is sent in full-duplex."
             android:summaryOff="Audio is sent in half-duplex."
             />
 
-        <ListPreference
+        <Preference
             android:key="Reboot"
             android:title="Reboot"
             android:summary="Click to reboot device."
-            android:entryValues="@array/reboot_device_value_list"
-            android:entries="@array/reboot_device_list"
-            android:defaultValue="1"
             />
-        <ListPreference
+        <Preference
             android:key="Send Report"
             android:title="Send Report"
             android:summary="Click to send report through E-mail"
-            android:entries="@array/send_report"
-            android:entryValues="@array/send_report_value"
-            android:dialogTitle="Send Report"
-            android:defaultValue="1"
             />
 
     </PreferenceCategory>

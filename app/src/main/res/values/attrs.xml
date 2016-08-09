@@ -11,5 +11,13 @@
         <attr name="maxValue" format="integer" />
         <attr name="currentValue" format="integer" />
     </declare-styleable>
+    
+        <declare-styleable name="NiceSpinner">
+        <attr name="arrowTint" format="color" />
+        <attr name="hideArrow" format="boolean" />
+        <attr name="backgroundSelector" format="integer"/>
+        <attr name="textTint" format="color"/>
+    </declare-styleable>
+
 
 </resources>

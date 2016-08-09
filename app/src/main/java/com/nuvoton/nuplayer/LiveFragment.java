@@ -608,5 +608,9 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             microPhoneButton.setOnTouchListener(this);
         }
     }
+
+    public void setResolution(String resolution){
+        mVideoView.setResolution(resolution);
+    }
 }
 

@@ -88,42 +88,34 @@
 
     <string-array name="reboot_device_list">
         <item>Reboot</item>
-        <item>Cancel</item>
     </string-array>
 
     <string-array name="reboot_device_value_list">
         <item>0</item>
-        <item>1</item>
     </string-array>
 
     <string-array name="reset_data_list">
         <item>Reset</item>
-        <item>Cancel</item>
     </string-array>
 
     <string-array name="reset_data_value_list">
         <item>0</item>
-        <item>1</item>
     </string-array>
 
     <string-array name="show_qr_code_list">
         <item>Show QR Code</item>
-        <item>Cancel</item>
     </string-array>
 
     <string-array name="show_qr_code_value_list">
         <item>0</item>
-        <item>1</item>
     </string-array>
 
     <string-array name="send_report">
         <item>Send</item>
-        <item>Cancel</item>
     </string-array>
 
     <string-array name="send_report_value">
         <item>0</item>
-        <item>1</item>
     </string-array>
 
 

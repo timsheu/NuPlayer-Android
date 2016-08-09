@@ -219,4 +219,9 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
     public void manualSendReport() {
 
     }
+
+    @Override
+    public void setResolution(String resolution) {
+        liveFragment.setResolution(resolution);
+    }
 }

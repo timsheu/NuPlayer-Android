@@ -73,10 +73,10 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 		if (mCreated  == true) {
 			surfaceDestroyed(holder);
 		}
-
 		Surface surface = holder.getSurface();
+        holder.setFixedSize(300, 300);
 		mMpegPlayer.render(surface);
-//        Log.d(TAG, "surfaceCreated: width:" + String.valueOf(m));
+        Log.d(TAG, "surfaceCreated: ");
         mCreated = true;
 	}
 
@@ -97,12 +97,16 @@ public class FFmpegSurfaceView extends SurfaceView implements FFmpegDisplay,
 
 		float width = (MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight());
 		float height = (MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom());
-        Log.d(TAG, "onMeasure: " + resolution + "width:" + String.valueOf(width) + " height: " + String.valueOf(height));
-		if (widthMode == MeasureSpec.EXACTLY){
+        Log.d(TAG, "before onMeasure: " + resolution + " width:" + String.valueOf(width) + " height: " + String.valueOf(height));
+        if (height < (width/ratio)){
+            width = height*ratio;
+        }else{
             height = (width / ratio);
-			heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)height, MeasureSpec.EXACTLY);
-		}
-        Log.d(TAG, "onMeasure: " + resolution + "width:" + String.valueOf(width) + " height: " + String.valueOf(height));
+        }
+        widthMeasureSpec = MeasureSpec.makeMeasureSpec((int)width, MeasureSpec.EXACTLY);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)height, MeasureSpec.EXACTLY);
+//        getHolder().setFixedSize((int)width, (int)height);
+        Log.d(TAG, "after  onMeasure: " + resolution + " width:" + String.valueOf(width) + " height: " + String.valueOf(height));
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
