@@ -1,6 +1,7 @@
 package com.nuvoton.nuplayer;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -10,6 +11,8 @@ import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.nuvoton.socketmanager.ReadConfigure;
+
 import android.app.FragmentManager;
 import android.view.Surface;
 import android.view.View;
@@ -69,6 +72,13 @@ public class LivePage extends AppCompatActivity implements LiveFragment.OnHideBo
         }
         Log.d(TAG, "onCreate:" + platform + ", " + cameraSerial);
         initUI();
+        ReadConfigure configure = ReadConfigure.getInstance(this, false);
+        String cameraName = "Setup Camera " + cameraSerial;
+        SharedPreferences preference = getApplicationContext().getSharedPreferences(cameraName, Context.MODE_PRIVATE);
+        String version = preference.getString("Version", "0");
+        if (version.compareTo("1.1.4") != 0){
+            configure.initSharedPreference(Integer.valueOf(cameraSerial), true);
+        }
         switch (orientation){
             case Surface.ROTATION_90:
             case Surface.ROTATION_270:

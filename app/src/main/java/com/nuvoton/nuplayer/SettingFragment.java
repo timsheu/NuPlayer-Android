@@ -103,7 +103,7 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
             addPreferencesFromResource(R.xml.settings_dvr);
         }
 
-        configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
+        configure = ReadConfigure.getInstance(getActivity().getApplicationContext(), false);
         getHistoryList();
     }
 

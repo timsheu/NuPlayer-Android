@@ -55,7 +55,7 @@ public class FilePlayActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_play);
-        configure = ReadConfigure.getInstance(getApplicationContext());
+        configure = ReadConfigure.getInstance(getApplicationContext(), false);
         registerUI();
         determineOrientation();
         Log.d(TAG, "onCreate: " + fileURL);

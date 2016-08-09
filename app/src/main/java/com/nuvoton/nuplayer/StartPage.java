@@ -45,7 +45,7 @@ public class StartPage extends AppCompatActivity {
                 showTutorial();
             }
         });
-        configure = ReadConfigure.getInstance(this);
+        configure = ReadConfigure.getInstance(this, false);
         boolean isTutorial = configure.isTutorial();
         Log.d(TAG, "onCreate: " + String.valueOf(isTutorial));
         if (isTutorial){

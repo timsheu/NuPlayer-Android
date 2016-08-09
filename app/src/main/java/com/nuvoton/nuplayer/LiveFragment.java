@@ -303,7 +303,7 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
             }
         });
         mMpegPlayer = new FFmpegPlayer((FFmpegDisplay) mVideoView, this);
-        configure = ReadConfigure.getInstance(getActivity().getApplicationContext());
+        configure = ReadConfigure.getInstance(getActivity().getApplicationContext(), false);
 
     }
 
@@ -612,5 +612,6 @@ public class LiveFragment extends Fragment implements OnClickListener, OnSeekBar
     public void setResolution(String resolution){
         mVideoView.setResolution(resolution);
     }
+
 }
 

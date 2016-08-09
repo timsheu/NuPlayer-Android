@@ -44,7 +44,7 @@ public class ReadConfigure {
     private ReadConfigure(){
         Log.d(TAG, "ReadConfigure: create");
     }
-    public static ReadConfigure getInstance(Context context){
+    public static ReadConfigure getInstance(Context context, Boolean clear){
         Log.d(TAG, "getInstance: ");
         contextLocal = context;
         for (int i=0; i<5; i++){
@@ -167,6 +167,7 @@ public class ReadConfigure {
         if (clear == true){
             editor.clear();
         }
+		editor.putString("Version", "1.1.4");
         editor.putString("Camera Port", "80");
         editor.putBoolean("Tutorial", false);
         editor.putBoolean("First Created", true);
